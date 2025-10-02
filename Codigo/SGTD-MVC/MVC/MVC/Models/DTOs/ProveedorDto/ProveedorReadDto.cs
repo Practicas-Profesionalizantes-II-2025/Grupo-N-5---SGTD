@@ -11,6 +11,5 @@
         public string Ciudad { get; set; }
         public string Provincia { get; set; }
         public int EstadoId { get; set; }
-        public List<int> RubroIds { get; set; }
     }
 }

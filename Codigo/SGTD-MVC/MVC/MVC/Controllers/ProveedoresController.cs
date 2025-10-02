@@ -3,10 +3,8 @@ using MVC.Models.DTOs.ProveedorDto;
 
 namespace MVC.Controllers
 {
-    using global::MVC.Models.DTOs.EstadoDto;
     using global::MVC.Models.DTOs.RubroDto;
     using global::MVC.Models.Entity;
-    using global::MVC.Models.ViewModels;
     using Microsoft.AspNetCore.Authorization;
     using System.Text.Json;
 
@@ -18,8 +16,6 @@ namespace MVC.Controllers
             private readonly HttpClient _httpClient;
             private readonly string _apiBaseUrl = "proveedor"; // endpoint base de tu API
             private readonly string _apiRubroUrl = "rubro";
-            private readonly string _apiEstadoUrl = "estado";
-
 
             public ProveedoresController(IHttpClientFactory httpClientFactory)
             {
@@ -30,68 +26,27 @@ namespace MVC.Controllers
             {
                 try
                 {
-                    // Obtener proveedores
                     var response = await _httpClient.GetAsync(_apiBaseUrl);
                     if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
-                        return View(new List<ProveedorIndexVm>());
+                        return View(new List<ProveedorReadDTO>());
 
-                    var proveedoresDto = new List<ProveedorReadDTO>();
                     if (response.IsSuccessStatusCode)
                     {
                         var content = await response.Content.ReadAsStringAsync();
-                        proveedoresDto = JsonSerializer.Deserialize<List<ProveedorReadDTO>>(content,
+                        var proveedores = JsonSerializer.Deserialize<List<ProveedorReadDTO>>(content,
                             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                        return View(proveedores);
                     }
-
-                    // Obtener estados
-                    var estadoResponse = await _httpClient.GetAsync(_apiEstadoUrl);
-                    var estados = new List<EstadoReadDTO>();
-                    if (estadoResponse.IsSuccessStatusCode)
-                    {
-                        var estadoContent = await estadoResponse.Content.ReadAsStringAsync();
-                        estados = JsonSerializer.Deserialize<List<EstadoReadDTO>>(estadoContent,
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    }
-
-                    // Obtener rubros
-                    var rubroResponse = await _httpClient.GetAsync(_apiRubroUrl);
-                    var rubros = new List<RubroReadDTO>();
-                    if (rubroResponse.IsSuccessStatusCode)
-                    {
-                        var rubroContent = await rubroResponse.Content.ReadAsStringAsync();
-                        rubros = JsonSerializer.Deserialize<List<RubroReadDTO>>(rubroContent,
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                        ViewBag.Rubros = rubros;
-                    }
-
-                    // Mapear DTOs a ViewModel
-                    var proveedoresVM = proveedoresDto.Select(p => new ProveedorIndexVm
-                    {
-                        Id = p.Id,
-                        Nombre = p.Nombre,
-                        Cuit = p.Cuit,
-                        Direccion = p.Direccion,
-                        Correo = p.Correo,
-                        Telefono = p.Telefono,
-                        Ciudad = p.Ciudad,
-                        Provincia = p.Provincia,
-
-                        EstadoId = p.EstadoId,
-                        EstadoNombre = estados.FirstOrDefault(e => e.Id == p.EstadoId)?.Nombre ?? "Sin estado",
-
-                        RubroIds = p.RubroIds,
-                        RubroNombres = rubros.Where(r => p.RubroIds.Contains(r.Id)).Select(r => r.Nombre).ToList()
-                    }).ToList();
-
-                    return View(proveedoresVM);
                 }
                 catch (Exception ex)
                 {
+                    // Log error si es necesario
                     ViewBag.Error = "Error al cargar los proveedores";
-                    return View(new List<ProveedorIndexVm>());
                 }
-            }
 
+                return View(new List<ProveedorReadDTO>());
+            }
 
             [HttpGet]
             public async Task<IActionResult> Create()

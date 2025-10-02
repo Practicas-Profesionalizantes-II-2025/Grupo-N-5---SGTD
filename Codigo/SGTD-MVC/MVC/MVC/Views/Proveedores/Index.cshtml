@@ -1,4 +1,4 @@
-﻿@model List<MVC.Models.ViewModels.ProveedorIndexVm>
+﻿@model List<MVC.Models.DTOs.ProveedorDto.ProveedorReadDTO>
 
 @{
     ViewData["Title"] = "Proveedores";
@@ -26,7 +26,7 @@
     <!-- Tabla dentro de un contenedor con scroll -->
     <div class="table-card">
         <div class="table-responsive proveedores-table-wrapper">
-            <table class="table proveedores-table index-table mb-0">
+            <table class="table proveedores-table mb-0">
                 <thead>
                     <tr>
                         <th class="check-col"><input type="checkbox" id="checkAll" /></th>
@@ -35,10 +35,6 @@
                         <th>Teléfono</th>
                         <th>Correo Electrónico</th>
                         <th>Dirección</th>
-                        <th>Provincia</th>
-                        <th>Ciudad</th>
-                        <th>Rubros</th>
-                        <th class="estado-col">Estado</th>
                     </tr>
                 </thead>
                 <tbody id="tabla-body">
@@ -53,18 +49,7 @@
                                 <td>@p.Telefono</td>
                                 <td>@p.Correo</td> 
                                 <td>@p.Direccion</td>
-								<td>@p.Provincia</td>
-								<td>@p.Ciudad</td>
-                                <td>@string.Join(", ", p.RubroNombres)</td>
-								<td class="estado-col">
-									@if (p.EstadoNombre == "Activo")
-									{
-                                        <span class="badge estado-activo">Activo</span>
-									}
-									else
-									{
-                                        <span class="badge estado-inactivo">Inactivo</span>
-									}
+                               
                             </tr>
                         }
                     }
