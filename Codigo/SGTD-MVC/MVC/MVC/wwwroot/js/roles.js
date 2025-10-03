@@ -39,8 +39,8 @@ $(document).on('submit', '#formCrearRol', function (e) {
     });
 });
 
-// Eliminar rol
-$(document).on('click', '.btn-eliminar', function () {
+//Eliminar rol
+$(document).on('click', '#modalRoles .btn-eliminar-rol', function () {
     if (!confirm('¿Eliminar este rol?')) return;
 
     const row = $(this).closest('tr');

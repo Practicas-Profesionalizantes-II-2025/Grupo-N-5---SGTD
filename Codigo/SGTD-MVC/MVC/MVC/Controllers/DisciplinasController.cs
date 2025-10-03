@@ -46,7 +46,7 @@ namespace MVC.Controllers
             getResp.EnsureSuccessStatusCode();
             var disciplinas = await getResp.Content.ReadFromJsonAsync<List<DisciplinaReadDTO>>() ?? new List<DisciplinaReadDTO>();
 
-            return PartialView("Modals/_TablaRubros", disciplinas);
+            return PartialView("Modals/_TablaDisciplinas", disciplinas);
         }
 
         [HttpPost]
@@ -60,7 +60,7 @@ namespace MVC.Controllers
             // Devolver tabla actualizada
             var getResp = await _httpClient.GetAsync(_apiBaseUrl);
             var disciplinas = await getResp.Content.ReadFromJsonAsync<List<DisciplinaReadDTO>>() ?? new List<DisciplinaReadDTO>();
-            return PartialView("Modals/_TablaRubros", disciplinas);
+            return PartialView("Modals/_TablaDisciplinas", disciplinas);
         }
 
         [HttpPost]
@@ -71,7 +71,7 @@ namespace MVC.Controllers
 
             var getResp = await _httpClient.GetAsync(_apiBaseUrl);
             var disciplina = await getResp.Content.ReadFromJsonAsync<List<DisciplinaReadDTO>>() ?? new List<DisciplinaReadDTO>();
-            return PartialView("Modals/_TablaRubros", disciplina);
+            return PartialView("Modals/_TablaDisciplinas", disciplina);
         }
     }
 }

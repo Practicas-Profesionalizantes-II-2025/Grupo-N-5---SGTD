@@ -1,0 +1,38 @@
+﻿@model MVC.Models.ViewModels.ProductoStockVM
+
+<link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+
+<div class="modal fade" id="stockModal" tabindex="-1" aria-labelledby="stockModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- fondo oscuro y bordes -->
+            <form id="stockForm" asp-controller="Stock" asp-action="UpdateStock" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" id="productoId" value="@Model?.Id" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stockModalLabel">Actualizar stock</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <p><strong>Producto:</strong> <span id="productoNombre">@Model?.Nombre</span></p>
+
+                    <div class="form-row">
+                        <input type="number" name="Cantidad" id="cantidad" class="form-input" value="0" />
+                    </div>
+                    <small class="text-muted">Ejemplo: 10 para sumar, -5 para restar</small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-delete" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-add">Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

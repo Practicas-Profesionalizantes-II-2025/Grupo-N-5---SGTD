@@ -53,3 +53,15 @@
     .btn-delete:disabled {
         opacity: 0.5;
     }
+
+.btn-stock {
+    padding: 3px 10px !important;
+    background-color: #3781c9;
+    border: 2px solid #06315c;
+    color: #06315c;
+}
+    .btn-stock:hover {
+        color: #b0d7ff;
+        box-shadow: 0 0 0 0.25rem rgba(176, 216, 255, 0.50) !important;
+        border: 2px solid #b0d7ff;
+    }

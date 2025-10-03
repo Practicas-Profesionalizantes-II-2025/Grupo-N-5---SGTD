@@ -48,7 +48,16 @@
                                 <td>@producto.Nombre</td>
 								<td>@string.Join(", ", producto.ProveedorNombres)</td>
                                 <td class="@(producto.Cantidad <= 5 ? "celda-inactiva" : "")">
-                                    @producto.Cantidad
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+										@producto.Cantidad
+										<button type="button" class="btn btn-edit btn-stock"
+												data-id="@producto.Id"
+												data-nombre="@producto.Nombre"
+												data-bs-toggle="modal"
+												data-bs-target="#stockModal">
+											Gestionar Stock
+										</button>
+                                    </div>                               
                                 </td>
                                 <td>@producto.Precio.ToString("C", new System.Globalization.CultureInfo("es-AR"))</td>
 
@@ -143,7 +152,9 @@
             const rowChecks = () => document.querySelectorAll('#tabla-body input[type="checkbox"]');
             const btnModify = document.getElementById('btnModify');
             const btnDelete = document.getElementById('btnDelete');
+            const stockModal = document.getElementById('stockModal');
 
+            //Checks
             document.addEventListener('change', (e) => {
                 if (e.target === checkAll) {
                     rowChecks().forEach(c => c.checked = checkAll.checked);
@@ -153,7 +164,7 @@
                 btnDelete.disabled = checked === 0;
             });
 
-            // Modal eliminación
+            //Modal eliminación
             btnDelete?.addEventListener('click', () => {
                 const selected = document.querySelector('#tabla-body input[name="sel"]:checked');
                 if (selected) {
@@ -164,6 +175,7 @@
                 }
             });
 
+            //Redirección a vista de modificación
             btnModify?.addEventListener('click', () => {
                 const selected = document.querySelector('#tabla-body input[name="sel"]:checked');
                 if (selected) {
@@ -174,7 +186,16 @@
                     alert('Seleccioná un producto para modificar.');
                 }
             });
+            //Modal de Adición            
+            stockModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id');
+                const nombre = button.getAttribute('data-nombre');
 
+                document.getElementById('productoId').value = id;
+                document.getElementById('productoNombre').textContent = nombre;
+                document.getElementById('cantidad').value = 0;
+            });
         });
     </script>
 }
