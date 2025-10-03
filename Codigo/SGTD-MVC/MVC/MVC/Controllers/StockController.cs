@@ -7,6 +7,7 @@ using MVC.Models.DTOs.ProveedorDto;
 using MVC.Models.DTOs.RubroDto;
 using MVC.Models.Entity;
 using MVC.Models.ViewModels;
+using System.Text;
 using System.Text.Json;
 
 namespace MVC.Controllers
@@ -254,6 +255,35 @@ namespace MVC.Controllers
             }
 
             return View(producto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStock(ProductoStockVM vm)
+        {
+            // Traigo el producto completo desde la API
+            var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{vm.Id}");
+            if (!response.IsSuccessStatusCode) return RedirectToAction(nameof(Index));
+
+            var body = await response.Content.ReadAsStringAsync();
+
+            // Usar System.Text.Json para deserializar (coherente con el resto del controller)
+            var productoDto = JsonSerializer.Deserialize<ProductoUpdateDTO>(body,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            if (productoDto == null) return RedirectToAction(nameof(Index));
+
+            productoDto.Cantidad += vm.Cantidad;
+            if (productoDto.Cantidad < 0) productoDto.Cantidad = 0;
+
+            var json = JsonSerializer.Serialize(productoDto);
+            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
+            var putResponse = await _httpClient.PutAsync($"{_apiBaseUrl}/{productoDto.Id}", httpContent);
+
+            if (!putResponse.IsSuccessStatusCode)
+                TempData["Error"] = "No se pudo actualizar el stock";
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]

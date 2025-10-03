@@ -40,8 +40,8 @@ $(document).on('submit', '#formCrearDisciplina', function (e) {
 });
 
 // Eliminar Disciplina
-$(document).on('click', '.btn-eliminar', function () {
-    if (!confirm('¿Eliminar este disciplina?')) return;
+$(document).on('click', '#modalDisciplinas .btn-eliminar-disciplina', function () {
+    if (!confirm('¿Eliminar esta disciplina?')) return;
 
     const row = $(this).closest('tr');
     const id = row.data('id');

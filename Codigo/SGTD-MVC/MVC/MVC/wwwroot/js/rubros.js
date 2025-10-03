@@ -40,7 +40,7 @@ $(document).on('submit', '#formCrearRubro', function (e) {
 });
 
 // Eliminar rubro
-$(document).on('click', '.btn-eliminar', function () {
+$(document).on('click', '#modalRubros .btn-eliminar-rubro', function () {
     if (!confirm('¿Eliminar este rubro?')) return;
 
     const row = $(this).closest('tr');

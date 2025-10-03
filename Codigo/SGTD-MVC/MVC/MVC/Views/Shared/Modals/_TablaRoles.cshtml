@@ -2,6 +2,8 @@
 
 <link rel="stylesheet" href="~/css/modal.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/indexBase.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+
 <div>
 	<div class="tapa"></div>
 	<div class="proveedores-table-wrapper">
@@ -18,10 +20,12 @@
 					foreach (var rol in Model)
 					{
 						<tr data-id="@rol.Id">
-							<td class="nombre-rol">@rol.Nombre</td>
-							<td style="width: 200px;">
-								<button class="btn btn-sm btn-modificar">Modificar</button>
-								<button class="btn btn-sm btn-eliminar">Eliminar</button>
+							<td style ="text-align: left !important" class="nombre-rol">@rol.Nombre</td>
+							<td style="width: 210px;">
+								<div style="display: flex; justify-content: space-between;">
+									<button class="btn-sm btn-modificar">Modificar</button>
+									<button class="btn-sm btn-eliminar btn-eliminar-rol">Eliminar</button>
+								</div>
 							</td>
 						</tr>
 					}
