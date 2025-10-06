@@ -1,0 +1,78 @@
+﻿@model MVC.Models.DTOs.FacturaDto.FacturaCreateDTO
+
+@{
+    ViewData["Title"] = "Generar venta";
+}
+
+<link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
+
+<div class="content-container p-4 add-reporte-page">
+    <div class="form-card">
+        <h2 class="form-title">GENERAR VENTA</h2>
+
+        <form asp-action="Create" method="post">
+
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.RazonSocial, new { @class = "form-input", placeholder = "Razón Social", required = "required" })
+                    @Html.ValidationMessageFor(m => m.RazonSocial)
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.IdFiscal, new { @class = "form-input", placeholder = "ID Fiscal", type = "number", required = "required" })
+                    @Html.ValidationMessageFor(m => m.IdFiscal)
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.DireccionFiscal, new { @class = "form-input", placeholder = "Dirección Fiscal", required = "required" })
+                    @Html.ValidationMessageFor(m => m.DireccionFiscal)
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Descripcion, new { @class = "form-input", placeholder = "Descripción", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Descripcion)
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.CantidadProductos, new { @class = "form-input", placeholder = "Cantidad de Productos", type = "number", min = "1", required = "required" })
+                    @Html.ValidationMessageFor(m => m.CantidadProductos)
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Monto, new { @class = "form-input", placeholder = "Monto Total", type = "number", step = "0.01", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Monto)
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.FechaEmision, new { @class = "form-input", type = "date", required = "required" })
+                    @Html.ValidationMessageFor(m => m.FechaEmision)
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.ProductoId, new { @class = "form-input", placeholder = "ID del Producto", type = "number", required = "required" })
+                    @Html.ValidationMessageFor(m => m.ProductoId)
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.UsuarioId, new { @class = "form-input", placeholder = "ID del Usuario", type = "number", required = "required" })
+                    @Html.ValidationMessageFor(m => m.UsuarioId)
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.ClienteId, new { @class = "form-input", placeholder = "ID del Cliente", type = "number", required = "required" })
+                    @Html.ValidationMessageFor(m => m.ClienteId)
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-lg btn-edit">VOLVER</a>
+                <button type="submit" class="btn btn-lg btn-add">CREAR</button>
+            </div>
+        </form>
+    </div>
+</div>

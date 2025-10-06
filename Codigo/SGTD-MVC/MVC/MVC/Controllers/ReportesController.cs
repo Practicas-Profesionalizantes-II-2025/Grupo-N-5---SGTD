@@ -48,7 +48,7 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Factura factura)
+        public async Task<IActionResult> Create(FacturaCreateDTO factura)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Factura factura)
+        public async Task<IActionResult> Edit(int id, FacturaUpdateDTO factura)
         {
             if (ModelState.IsValid)
             {
