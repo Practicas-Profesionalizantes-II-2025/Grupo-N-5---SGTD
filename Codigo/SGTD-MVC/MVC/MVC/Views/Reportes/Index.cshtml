@@ -89,7 +89,7 @@
             </table>
         </div>
         <div class="actions-row mt-3 d-flex flex-wrap gap-3 justify-content-between sticky-footer">
-            <button id="btnGenerarVenta" class="btn btn-lg btn-add">GENERAR VENTA</button>
+            <a asp-controller="Reportes" asp-action="Create" class="btn btn-lg btn-add">GENERAR VENTA</a>
             <div class="ms-auto d-flex gap-2">
                 <button id="btnVerDetalles" class="btn btn-lg btn-edit" disabled>VER DETALLES</button>
                 <button id="btnDescargarPdf" class="btn btn-lg btn-secondary" disabled>📄 DESCARGAR PDF</button>
@@ -136,8 +136,7 @@
             }
         });
 
-        // Configurar botón de generar venta
-        document.getElementById('btnGenerarVenta').addEventListener('click', function() {
+        document.getElementById('btnGenerarVenta').addEventListener('click', function () {
             window.location.href = `/Ventas/Create`;
         });
     </script>
