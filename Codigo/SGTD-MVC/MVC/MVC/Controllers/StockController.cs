@@ -145,6 +145,22 @@ namespace MVC.Controllers
             return View();
         }
 
+        //Obtener Disciplinas de forma dinámica
+        [HttpGet]
+        public async Task<IActionResult> GetDisciplinas()
+        {
+            var response = await _httpClient.GetAsync(_apiDisciplinaUrl);
+            if (!response.IsSuccessStatusCode)
+                return Json(new List<DisciplinaReadDTO>());
+
+            var content = await response.Content.ReadAsStringAsync();
+            var disciplinas = JsonSerializer.Deserialize<List<DisciplinaReadDTO>>(content,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return Json(disciplinas);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Create(ProductoCreateDTO producto)
         {
