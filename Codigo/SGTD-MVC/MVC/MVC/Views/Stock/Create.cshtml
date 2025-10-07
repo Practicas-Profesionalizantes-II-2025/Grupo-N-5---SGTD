@@ -22,7 +22,7 @@
                 <div style="width:100%;">
                     <div class="custom-select-container multiple" style="width:100%;">
                         <button type="button" class="custom-select-trigger">
-                            <span class="selected-value placeholder">Seleccione uno o más disciplinas</span>
+                            <span class="selected-value placeholder">Seleccione una disciplina</span>
                             <span class="arrow">▼</span>
                         </button>
 
@@ -101,4 +101,119 @@
     <script src="~/js/select.js" defer asp-append-version="true"></script>
     <script src="~/js/multipleSelect.js" defer asp-append-version="true"></script>
     <script src="~/js/switch.js" defer asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const selectContainer = document.querySelector(".custom-select-container"); // asume único select custom simple en este fragmento (disciplina)
+            if (!selectContainer) return;
+
+            const optionsList = selectContainer.querySelector(".custom-select-options");
+            const trigger = selectContainer.querySelector(".custom-select-trigger");
+            const hiddenInputName = "DisciplinaId";
+
+            // Helper: crear <li> con listener para single-select
+            function crearLiDisciplina(id, nombre) {
+                const li = document.createElement("li");
+                li.dataset.value = id;
+                li.textContent = nombre;
+                li.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    // marcar visualmente
+                    optionsList.querySelectorAll("li").forEach(x => x.classList.remove("selected"));
+                    li.classList.add("selected");
+
+                    // actualizar trigger text
+                    const sv = trigger.querySelector(".selected-value");
+                    if (sv) {
+                        sv.textContent = nombre;
+                        sv.classList.remove("placeholder");
+                    }
+
+                    // actualizar input hidden (reemplaza o crea)
+                    let hid = selectContainer.querySelector(`input[name="${hiddenInputName}"]`);
+                    if (!hid) {
+                        hid = document.createElement("input");
+                        hid.type = "hidden";
+                        hid.name = hiddenInputName;
+                        selectContainer.appendChild(hid);
+                    }
+                    hid.value = id;
+
+                    // cerrar dropdown (si tu CSS/JS depende de una clase 'open')
+                    selectContainer.classList.remove("open");
+                });
+                return li;
+            }
+
+            // Llena el UL a partir de filas <tr data-id> de la tabla del modal
+            function llenarDesdeFilas(rows) {
+                // preservar selección actual
+                const actualId = (selectContainer.querySelector(`input[name="${hiddenInputName}"]`)?.value) || null;
+
+                optionsList.innerHTML = "";
+                rows.forEach(row => {
+                    const id = row.dataset.id;
+                    const nombre = row.querySelector(".disciplina-nombre")?.textContent?.trim() || row.querySelector("td")?.textContent?.trim();
+                    if (!id || !nombre) return;
+                    const li = crearLiDisciplina(id, nombre);
+                    if (actualId && actualId === id) li.classList.add("selected");
+                    optionsList.appendChild(li);
+                });
+
+                // si había selección, actualizar trigger visual
+                if (actualId) {
+                    const selLi = optionsList.querySelector(`li[data-value="${actualId}"]`);
+                    if (selLi) trigger.querySelector(".selected-value").textContent = selLi.textContent.trim();
+                }
+            }
+
+            // Intenta obtener filas desde el DOM; si no existen hace fetch a /Disciplinas/GetDisciplinas
+            async function actualizarSelectDisciplinas() {
+                let tablaContainer = document.getElementById("tablaDisciplinasContainer");
+
+                if (tablaContainer && tablaContainer.querySelectorAll("tbody tr[data-id]").length > 0) {
+                    llenarDesdeFilas(Array.from(tablaContainer.querySelectorAll("tbody tr[data-id]")));
+                    return;
+                }
+
+                // fallback: pedir partial al servidor (ajusta la URL si tu acción es otra)
+                try {
+                    const res = await fetch("/Disciplinas/GetDisciplinas", { method: "GET", headers: { "X-Requested-With": "XMLHttpRequest" } });
+                    if (!res.ok) return;
+                    const html = await res.text();
+                    const tmp = document.createElement("div");
+                    tmp.innerHTML = html;
+                    const rows = tmp.querySelectorAll("tbody tr[data-id]");
+                    if (rows.length === 0) {
+                        // si la partial devuelve un ul directamente (otro formato), intentar parsear li
+                        const lis = tmp.querySelectorAll("li[data-value]");
+                        if (lis.length > 0) {
+                            optionsList.innerHTML = "";
+                            lis.forEach(liSrc => {
+                                const id = liSrc.dataset.value;
+                                const nombre = liSrc.textContent.trim();
+                                optionsList.appendChild(crearLiDisciplina(id, nombre));
+                            });
+                        }
+                        return;
+                    }
+                    llenarDesdeFilas(Array.from(rows));
+                } catch (err) {
+                    console.error("Error cargando disciplinas:", err);
+                }
+            }
+
+            // Si tenés un modal de disciplinas con id modalDisciplinas, usar evento hidden.bs.modal
+            const modalDisciplinas = document.getElementById("modalDisciplinas");
+            if (modalDisciplinas) {
+                modalDisciplinas.addEventListener("hidden.bs.modal", () => {
+                    actualizarSelectDisciplinas();
+                });
+            }
+
+            // inicializar en carga
+            actualizarSelectDisciplinas();
+        });
+    </script>
+
 }

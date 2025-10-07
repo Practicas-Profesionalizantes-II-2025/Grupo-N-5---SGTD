@@ -185,7 +185,132 @@
                 const ciudadInput = ciudadContainer.querySelector("#CiudadNombre");
                 ciudadInput.value = ciudadNombre;
             });
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const multipleSelectContainer = document.querySelector(".custom-multiple-select-container.multiple");
+            if (!multipleSelectContainer) return; // nada que hacer
 
+            const multipleSelectOpciones = multipleSelectContainer.querySelector(".custom-multiple-select-options");
+            const hiddenInputsContainer = multipleSelectContainer.querySelector(".hidden-inputs");
+            const triggerValueEl = multipleSelectContainer.querySelector(".custom-multiple-select-trigger .selected-value");
+
+            // Helper: crea <li> y le pone listener
+            function crearLiConListener(id, nombre) {
+                const li = document.createElement("li");
+                li.dataset.value = id;
+                li.textContent = nombre;
+                li.addEventListener("click", e => {
+                    e.stopPropagation();
+
+                    li.classList.toggle("selected");
+                    const value = li.dataset.value;
+
+                    if (li.classList.contains("selected")) {
+                        // evitar duplicados
+                        if (!hiddenInputsContainer.querySelector(`input[data-value="${value}"]`)) {
+                            const input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = multipleSelectContainer.dataset.name;
+                            input.value = value;
+                            input.dataset.value = value;
+                            hiddenInputsContainer.appendChild(input);
+                        }
+                    } else {
+                        const input = hiddenInputsContainer.querySelector(`input[data-value="${value}"]`);
+                        if (input) input.remove();
+                    }
+
+                    actualizarTriggerTexto();
+                });
+                return li;
+            }
+
+            function actualizarTriggerTexto() {
+                const selectedTexts = Array.from(multipleSelectOpciones.querySelectorAll("li.selected"))
+                    .map(li => li.textContent.trim());
+                triggerValueEl.textContent = selectedTexts.length > 0 ? selectedTexts.join(", ") : "Seleccione uno o más rubros";
+                triggerValueEl.classList.toggle("placeholder", selectedTexts.length === 0);
+            }
+
+            // Llena el <ul> a partir de una lista de filas <tr> (NodeList o Array)
+            function llenarDesdeFilas(rows) {
+                // preservar selecciones actuales
+                const seleccionadosActuales = Array.from(hiddenInputsContainer.querySelectorAll("input"))
+                    .map(i => i.value);
+
+                multipleSelectOpciones.innerHTML = "";
+                // crear li por cada fila
+                rows.forEach(row => {
+                    const id = row.dataset.id;
+                    const nombre = row.querySelector(".rubro-disciplina")?.textContent?.trim();
+                    if (!id || !nombre) return;
+
+                    const li = crearLiConListener(id, nombre);
+                    if (seleccionadosActuales.includes(id)) {
+                        li.classList.add("selected");
+                        // si no existe input (por alguna razón), lo recreo
+                        if (!hiddenInputsContainer.querySelector(`input[data-value="${id}"]`)) {
+                            const input = document.createElement("input");
+                            input.type = "hidden";
+                            input.name = multipleSelectContainer.dataset.name;
+                            input.value = id;
+                            input.dataset.value = id;
+                            hiddenInputsContainer.appendChild(input);
+                        }
+                    }
+                    multipleSelectOpciones.appendChild(li);
+                });
+
+                actualizarTriggerTexto();
+            }
+
+            // Si la tabla del modal está en DOM, la usamos, sino la pedimos por fetch a tu action GetRubros (partial)
+            async function actualizarDropdownRubros() {
+                let tablaContainer = document.getElementById("tablaRubrosContainer");
+
+                if (tablaContainer && tablaContainer.querySelectorAll("tbody tr[data-id]").length > 0) {
+                    // ya hay filas en el DOM
+                    llenarDesdeFilas(Array.from(tablaContainer.querySelectorAll("tbody tr[data-id]")));
+                    return;
+                }
+
+                // Si no existe la tabla o está vacía, intentar obtenerla desde la acción que devuelve la partial
+                try {
+                    const res = await fetch("/Rubros/GetRubros", { method: "GET", headers: { "X-Requested-With": "XMLHttpRequest" } });
+                    if (!res.ok) {
+                        console.warn("No se pudo traer partial de rubros:", res.status);
+                        return;
+                    }
+                    const html = await res.text();
+                    // parsear HTML recibido y buscar filas
+                    const tmp = document.createElement("div");
+                    tmp.innerHTML = html;
+                    const rows = tmp.querySelectorAll("tbody tr[data-id]"); // NodeList
+                    if (rows.length === 0) {
+                        // tal vez la partial devuelve otro markup; no hay filas
+                        console.warn("Partial de rubros sin filas");
+                        multipleSelectOpciones.innerHTML = "";
+                        return;
+                    }
+                    llenarDesdeFilas(Array.from(rows));
+                    return;
+                } catch (err) {
+                    console.error("Error fetch GetRubros:", err);
+                }
+            }
+
+            // Cuando se cierra el modal de rubros, re-sincronizar
+            const modalRubros = document.getElementById("modalRubros");
+            if (modalRubros) {
+                modalRubros.addEventListener("hidden.bs.modal", () => {
+                    actualizarDropdownRubros();
+                });
+            }
+
+            // Inicializar al cargar página (intenta usar tabla en DOM o hace fetch)
+            actualizarDropdownRubros();
         });
     </script>
 }

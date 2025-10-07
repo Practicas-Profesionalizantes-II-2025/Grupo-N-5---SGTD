@@ -161,6 +161,21 @@ namespace MVC.Controllers
                 return Json(new List<CiudadDTO>());
             }
 
+            //Obtener Rubros de forma dinámica
+            [HttpGet]
+            public async Task<IActionResult> GetRubros()
+            {
+                var response = await _httpClient.GetAsync(_apiRubroUrl);
+                if (!response.IsSuccessStatusCode)
+                    return Json(new List<RubroReadDTO>());
+
+                var content = await response.Content.ReadAsStringAsync();
+                var rubros = JsonSerializer.Deserialize<List<RubroReadDTO>>(content,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                return Json(rubros);
+            }
+
             [HttpPost]
             public async Task<IActionResult> Create(ProveedorCreateDTO proveedor)
             {
