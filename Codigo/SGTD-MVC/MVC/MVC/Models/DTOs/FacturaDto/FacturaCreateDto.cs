@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Shared.DTOs.FacturaDTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace MVC.Models.DTOs.FacturaDto
 {
@@ -26,17 +27,13 @@ namespace MVC.Models.DTOs.FacturaDto
         [StringLength(100, ErrorMessage = "La razón social no puede superar los 100 caracteres.")]
         public string RazonSocial { get; set; }
 
-        [Required(ErrorMessage = "La cantidad de productos es obligatoria.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe haber al menos un producto.")]
-        public int CantidadProductos { get; set; }
-
-        [Required(ErrorMessage = "El ID del producto es obligatorio.")]
-        public int ProductoId { get; set; }
-
         [Required(ErrorMessage = "El ID del usuario es obligatorio.")]
         public int UsuarioId { get; set; }
 
         [Required(ErrorMessage = "El ID del cliente es obligatorio.")]
         public int ClienteId { get; set; }
+
+        [Required(ErrorMessage = "Debe agregar al menos un producto.")]
+        public List<FacturaProductoCreateDTO> Productos { get; set; } = new();
     }
 }

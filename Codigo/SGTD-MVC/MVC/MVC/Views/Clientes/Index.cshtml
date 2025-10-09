@@ -1,0 +1,172 @@
+﻿@model List<MVC.Models.DTOs.ClienteDto.ClienteReadDTO>
+
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<link rel="stylesheet" href="~/css/indexBase.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
+
+<div class="content-container p-3 clientes-page">
+    <!-- Filtro superior -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div class="search-wrapper d-flex align-items-center w-100 w-md-40">
+            <label for="q" class="me-2 visually-hidden">Buscar</label>
+            <div class="input-group">
+                <span class="input-group-text bg-dark border-0" style="color: #dedede; padding: 5px 8px; border-radius: 8px 0 0 8px;">
+                    <svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M42 42L33.3 33.3M38 22C38 30.8366 30.8366 38 22 38C13.1634 38 6 30.8366 6 22C6 13.1634 13.1634 6 22 6C30.8366 6 38 13.1634 38 22Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <input id="q" type="text" class="form-control search-input" placeholder="Buscar por nombre, DNI o ciudad..." />
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-card">
+        <div class="table-responsive proveedores-table-wrapper">
+            <table class="table proveedores-table index-table mb-0">
+                <thead>
+                    <tr>
+                        <th class="check-col"><input type="checkbox" id="checkAll" /></th>
+                        <th>Nombre</th>
+                        <th>DNI</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Provincia</th>
+                        <th>Ciudad</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-body">
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var c in Model)
+                        {
+                            <tr>
+                                <td class="check-col"><input type="checkbox" name="sel" value="@c.Id" /></td>
+                                <td>@c.Nombre</td>
+                                <td>@c.Dni</td>
+                                <td>@c.Telefono</td>
+                                <td>@c.Direccion</td>
+                                <td>@c.Provincia</td>
+                                <td>@c.Ciudad</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="7" class="text-center text-muted">No hay clientes</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Acciones -->
+        <div class="actions-row mt-3 d-flex flex-wrap gap-3 justify-content-between sticky-footer">
+            <a asp-controller="Clientes" asp-action="Create" class="btn btn-lg btn-add">AÑADIR CLIENTE</a>
+            <div class="ms-auto d-flex gap-2">
+                <button id="btnModify" class="btn btn-lg btn-edit" disabled>MODIFICAR CLIENTE</button>
+                <button id="btnDelete" class="btn btn-lg btn-delete" disabled>ELIMINAR CLIENTE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirmación eliminación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-white">
+            <form id="deleteForm" asp-controller="Clientes" asp-action="Delete" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" id="deleteId" />
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Confirmar eliminación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que querés eliminar al cliente?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const qInput = document.getElementById('q');
+            const checkAll = document.getElementById('checkAll');
+            const btnModify = document.getElementById('btnModify');
+            const btnDelete = document.getElementById('btnDelete');
+
+            // --- Filtro ---
+            if (qInput) {
+                qInput.addEventListener('input', function () {
+                    const q = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('#tabla-body tr');
+                    rows.forEach(r => {
+                        const text = r.innerText.toLowerCase();
+                        r.style.display = text.includes(q) ? '' : 'none';
+                    });
+                });
+            }
+
+            // --- Selección ---
+            const rowChecks = () => document.querySelectorAll('#tabla-body input[type="checkbox"][name="sel"]');
+
+            function updateButtons() {
+                const checks = Array.from(rowChecks());
+                const checkedCount = checks.filter(c => c.checked).length;
+
+                btnModify.disabled = checkedCount !== 1;
+                btnDelete.disabled = checkedCount === 0;
+
+                checkAll.indeterminate = checkedCount > 0 && checkedCount < checks.length;
+                checkAll.checked = checks.length > 0 && checkedCount === checks.length;
+            }
+
+            if (checkAll) {
+                checkAll.addEventListener('click', () => {
+                    const checks = rowChecks();
+                    checks.forEach(c => { c.checked = checkAll.checked; });
+                    updateButtons();
+                });
+            }
+
+            document.addEventListener('change', (e) => {
+                if (e.target.matches('#tabla-body input[type="checkbox"][name="sel"]')) {
+                    updateButtons();
+                }
+            });
+
+            updateButtons();
+
+            // --- Modal eliminación ---
+            btnDelete?.addEventListener('click', () => {
+                const selected = document.querySelector('#tabla-body input[name="sel"]:checked');
+                if (selected) {
+                    document.getElementById('deleteId').value = selected.value;
+                    new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+                } else {
+                    alert('Seleccioná al menos un cliente para eliminar.');
+                }
+            });
+
+            // --- Modificar ---
+            btnModify?.addEventListener('click', () => {
+                const selected = document.querySelector('#tabla-body input[name="sel"]:checked');
+                if (selected) {
+                    const id = selected.value;
+                    window.location.href = `/Clientes/Edit/${id}`;
+                } else {
+                    alert('Seleccioná un cliente para modificar.');
+                }
+            });
+        });
+    </script>
+}

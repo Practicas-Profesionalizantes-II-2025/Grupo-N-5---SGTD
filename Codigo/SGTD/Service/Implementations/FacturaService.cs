@@ -49,13 +49,6 @@ namespace Service.Implementations
             return _mapper.ToReadDto(factura);
         }
 
-        //public async Task<FacturaReadDTO> CrearAsync(FacturaCreateDTO dto)
-        //{
-        //    var factura = _mapper.ToEntity(dto);
-        //    await _facturaRepository.Create(factura);
-        //    return _mapper.ToReadDto(factura);
-        //}
-
         public async Task<FacturaReadDTO> CrearAsync(FacturaCreateDTO dto)
         {
             var factura = new Factura

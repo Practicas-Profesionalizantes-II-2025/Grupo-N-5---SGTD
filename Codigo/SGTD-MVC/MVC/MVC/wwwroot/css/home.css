@@ -1,34 +1,36 @@
 ﻿.inicio-background {
     background-image: url('/images/logo-tienda.png');
     background-repeat: no-repeat;
-    background-position: center 40%;
-    background-size: 400px;
-    min-height: 125vh;
+    background-position: 49.9% 46%;
+    background-size: 335px;
+    min-height: 88vh; /* ajustado para que ocupe la pantalla visible */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Título arriba, acciones abajo */
+    justify-content: space-between; /* mantiene el título arriba y acciones abajo */
     padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 /* Texto de bienvenida */
 .welcome-section {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .welcome-title {
-    font-family: 'Montserrat', sans-serif; /* Fuente moderna */
-    font-size: clamp(2rem, 5vw, 2.5rem); /* Tamaño responsive */
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(2rem, 5vw, 2.5rem);
     font-weight: 700;
-    color: #dedede; /* Color oscuro elegante */
+    color: #dedede;
     text-align: center;
     padding-bottom: 15px;
     margin: 30px 0;
     margin-top: 0;
     line-height: 1.2;
-    text-transform: uppercase; /* Opcional: mayúsculas estilo moderno */
+    text-transform: uppercase;
     letter-spacing: 1.5px;
     position: relative;
 }
+
     .welcome-title::after {
         content: "";
         position: absolute;
@@ -37,42 +39,30 @@
         transform: translateX(-50%);
         width: 25%;
         height: 4px;
-        background: linear-gradient(90deg, #E9401D, #FFAB31, #E9401D); /* Degradado dorado */
+        background: linear-gradient(90deg, #E9401D, #FFAB31, #E9401D);
         border-radius: 2px;
     }
-    
+
 .text-muted {
     color: #9faebb !important;
-    margin-bottom: 3rem !important;
+    margin-bottom: 2rem !important;
 }
 /* Acciones */
 .actions {
     width: 100%;
 }
 
-/* Cards */
-
-/*.card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-clip: border-box;
-    background-color: #2c3e50;
-    border: 1px solid #2c3e50;
-    border-radius: 8px;
-}*/
-
 .card {
     background-color: #2c3e50;
     border: none;
     border-radius: 8px;
     transition: transform 0.2s ease;
+    color: #dedede;
 }
 
     .card:hover {
         transform: translateY(-5px);
+        color: #FFFFFF;
     }
 
 .card-title {
@@ -84,5 +74,40 @@
     .inicio-background {
         background-size: 250px;
         background-position: center 30%;
+    }
+}
+
+/* Hace que haya 5 columnas iguales en escritorio */
+.custom-col-5 {
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+
+/* Ajustes responsive */
+@media (max-width: 1200px) {
+    .custom-col-5 {
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
+}
+
+@media (max-width: 992px) {
+    .custom-col-5 {
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
+    }
+}
+
+@media (max-width: 768px) {
+    .custom-col-5 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-col-5 {
+        flex: 0 0 100%;
+        max-width: 100%;
     }
 }

@@ -63,7 +63,72 @@ body {
         color: #fff;
     }
 
-/* Sidebar */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #1a1f26;
+    color: #fff;
+}
+
+/* --- BARRA SUPERIOR --- */
+.topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #2c3e50;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    z-index: 3000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 1rem;
+    padding-left: 3px;
+}
+
+.topbar-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* --- BOTONES TOPBAR --- */
+.topbar .topbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem 0.9rem;
+    margin-left: 0.4rem;
+    background-color: transparent;
+    color: #bdc3c7;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+    .topbar .topbar-btn:hover,
+    .topbar .topbar-btn:focus {
+        background-color: #34495e;
+        color: #fff;
+        outline: none;
+    }
+
+    .topbar .topbar-btn:active {
+        background-color: #1f2d3a;
+        color: #fff;
+    }
+
+/* --- SIDEBAR --- */
 .sidebar {
     position: fixed;
     top: 50px;
@@ -71,95 +136,107 @@ body {
     height: calc(100vh - 50px);
     background-color: #2c3e50;
     overflow-x: hidden;
-    transition: width 0.3s;
+    transition: width 0.3s ease;
     white-space: nowrap;
     display: flex;
     flex-direction: column;
+    width: 60px;
+    z-index: 2500; /* por encima del contenido */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
 }
 
-    .sidebar.collapsed {
-        width: fit-content;
+    /* Hover: se expande pero SIN mover el contenido */
+    .sidebar:hover {
+        width: 165px;
     }
 
-    .sidebar:not(.collapsed) {
-        width: fit-content;
+    /* Toggle: se expande y MUEVE el contenido */
+    .sidebar.expanded {
+        width: 165px;
+        z-index: 2000; /* menos prioridad, ya que forma parte del layout */
     }
 
+/* --- ITEMS DE NAVEGACIÓN --- */
 .nav-item {
     display: flex;
     align-items: center;
-    padding: 0.8rem 0;
     color: #bdc3c7;
     text-decoration: none;
-    transition: background 0.3s, color 0.3s;
+    padding: 0.8rem 12px;
     margin: 4px;
     border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+    overflow: hidden;
 }
 
-    .nav-item i {
-        font-size: 1.2rem;
-        margin-right: 1rem;
-    }
+    .nav-item:hover,
     .nav-item.active {
         background-color: #34495e;
         color: white;
-        border-radius: 8px;
     }
-    .nav-item:hover {
-        background-color: #34495e;
-        color: white;
-        border-radius: 8px;
+
+    .nav-item svg {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        transition: margin-right 0.3s;
+        margin-left: 2px;
     }
+
+/* Texto oculto por defecto */
 .nav-text {
-    display: inline-block;
-    padding-right: 18px;
+    opacity: 0;
+    visibility: hidden;
+    margin-left: 0;
+    transition: opacity 0.3s, margin-left 0.3s;
 }
 
-.sidebar.collapsed .nav-text {
-    display: none;
+/* Mostrar texto en hover o toggle */
+.sidebar:hover .nav-text,
+.sidebar.expanded .nav-text {
+    opacity: 1;
+    visibility: visible;
+    margin-left: 10px;
 }
 
-
-
-/* Botón cerrar sesión */
+/* --- BOTÓN LOGOUT --- */
 .btn-logout {
     display: flex;
     align-items: center;
-    padding: 0.8rem 0;
     color: #bdc3c7;
-    background-color: #2c3e50;
+    background: none;
+    border: none;
     text-decoration: none;
-    transition: background 0.3s, color 0.3s, border 0.3s;
+    padding: 0.8rem 12px;
     margin: 4px;
     border-radius: 8px;
-    border: 1px solid #2c3e50;
+    transition: background 0.3s, color 0.3s;
 }
 
     .btn-logout:hover {
         background-color: #c0392b;
-        border: 1px solid #c0392b;
-        color: white;
+        color: #fff;
     }
 
-    .btn-logout i {
-        font-size: 1.2rem;
-        margin-right: 1rem;
-    }
-
-/* Contenido */
+/* --- CONTENIDO --- */
 .content {
     margin-top: 50px;
     margin-left: 60px;
     padding: 1rem;
-    transition: margin-left 0.3s;
+    position: relative;
+    transition: margin-left 0.3s ease;
 }
 
-    .content.expanded {
-        margin-left: 200px;
-    }
+/* Cuando el sidebar está expandido por toggle (no por hover) */
+.sidebar.expanded ~ .content {
+    margin-left: 165px;
+}
+
+/* Hover no afecta al contenido */
+
 
 .mar-18px {
-    margin: 0 0 0 18px;
+    margin: 0 0 0 4px;
 }
 
 nav.sidebar form {

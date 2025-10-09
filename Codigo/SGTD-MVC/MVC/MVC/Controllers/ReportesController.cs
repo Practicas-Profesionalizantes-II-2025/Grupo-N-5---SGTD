@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MVC.Models.DTOs.FacturaDto;
 using MVC.Models.DTOs.ProductoDto;
-using MVC.Models.Entity;
+using MVC.Models.DTOs.DisciplinaDto;
+using MVC.Models.DTOs.ClienteDto;
 using System.Text.Json;
 
 namespace MVC.Controllers
@@ -33,20 +34,22 @@ namespace MVC.Controllers
                     return View(factura);
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                // Log error si es necesario
                 ViewBag.Error = "Error al cargar los Reportes";
             }
 
             return View(new List<FacturaReadDTO>());
         }
 
-        public IActionResult Create()
+        [HttpGet]
+        public async Task<IActionResult> Create()
         {
+            await CargarDatosSelects();
             return View();
         }
 
+        // POST: Create
         [HttpPost]
         public async Task<IActionResult> Create(FacturaCreateDTO factura)
         {
@@ -57,65 +60,73 @@ namespace MVC.Controllers
                     var response = await _httpClient.PostAsJsonAsync(_apiBaseUrl, factura);
 
                     if (response.IsSuccessStatusCode)
-                    {
                         return RedirectToAction(nameof(Index));
-                    }
 
                     ModelState.AddModelError("", "Error al crear la factura");
                 }
-                catch (Exception ex)
+                catch
                 {
                     ModelState.AddModelError("", "Error de conexión con la API");
                 }
             }
+
+            await CargarDatosSelects(); // recargar selects si falla
             return View(factura);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        // Método privado para cargar disciplinas, productos y clientes
+        private async Task CargarDatosSelects()
         {
-            try
+            // Disciplinas
+            var responseDisciplinas = await _httpClient.GetAsync("disciplina");
+            if (responseDisciplinas.IsSuccessStatusCode)
             {
-                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}");
-
-                if (response.IsSuccessStatusCode)
+                var content = await responseDisciplinas.Content.ReadAsStringAsync();
+                if (!string.IsNullOrWhiteSpace(content))
                 {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var factura = JsonSerializer.Deserialize<Factura>(content,
+                    ViewBag.Disciplinas = JsonSerializer.Deserialize<IEnumerable<DisciplinaReadDTO>>(content,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                    return View(factura);
                 }
             }
-            catch (Exception ex)
+
+            // Productos
+            var responseProductos = await _httpClient.GetAsync("producto");
+            if (responseProductos.IsSuccessStatusCode)
             {
-                // Log error
+                var content = await responseProductos.Content.ReadAsStringAsync();
+                if (!string.IsNullOrWhiteSpace(content))
+                {
+                    ViewBag.Productos = JsonSerializer.Deserialize<IEnumerable<ProductoReadDTO>>(content,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
             }
 
-            return NotFound();
+            // Clientes
+            var responseClientes = await _httpClient.GetAsync("cliente");
+            if (responseClientes.IsSuccessStatusCode)
+            {
+                var content = await responseClientes.Content.ReadAsStringAsync();
+                if (!string.IsNullOrWhiteSpace(content))
+                {
+                    ViewBag.Clientes = JsonSerializer.Deserialize<IEnumerable<ClienteReadDTO>>(content,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                }
+            }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, FacturaUpdateDTO factura)
+        // Endpoint para filtrar productos por disciplina (AJAX)
+        [HttpGet]
+        public async Task<IActionResult> ProductosPorDisciplina(int disciplinaId)
         {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var response = await _httpClient.PutAsJsonAsync($"{_apiBaseUrl}/{id}", factura);
+            var response = await _httpClient.GetAsync($"producto/filtrarPorDisciplina/{disciplinaId}");
+            if (!response.IsSuccessStatusCode)
+                return Json(new List<ProductoReadDTO>());
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToAction(nameof(Index));
-                    }
+            var content = await response.Content.ReadAsStringAsync();
+            var productos = JsonSerializer.Deserialize<IEnumerable<ProductoReadDTO>>(content,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    ModelState.AddModelError("", "Error al actualizar la factura");
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", "Error de conexión con la API");
-                }
-            }
-            return View(factura);
+            return Json(productos);
         }
 
         [HttpPost]

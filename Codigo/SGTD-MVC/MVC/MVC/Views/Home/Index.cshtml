@@ -15,12 +15,11 @@
 
     <!-- Acciones -->
     <div class="actions container mt-auto">
-        <div class="row justify-content-center g-4">
-            <div class="col-6 col-sm-4 col-md-3">
+        <div class="row justify-content-center g-5">
+            <div class="col custom-col-5">
                 <a asp-controller="Stock" asp-action="Index" class="card shadow-sm h-100 text-decoration-none">
                     <div class="card-body">
                         <div class="card-title">
-                            <!-- Icono -->
                             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M42 16V42H6V16M20 24H28M2 6H46V16H2V6Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -29,19 +28,19 @@
                     </div>
                 </a>
             </div>
-            <div class="col-6 col-sm-4 col-md-3">
+            <div class="col custom-col-5">
                 <a asp-controller="Proveedores" asp-action="Index" class="card shadow-sm h-100 text-decoration-none">
                     <div class="card-body">
                         <div class="card-title">
                             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M32 8H36C37.0609 8 38.0783 8.42143 38.8284 9.17157C39.5786 9.92172 40 10.9391 40 12V40C40 41.0609 39.5786 42.0783 38.8284 42.8284C38.0783 43.5786 37.0609 44 36 44H12C10.9391 44 9.92172 43.5786 9.17157 42.8284C8.42143 42.0783 8 41.0609 8 40V12C8 10.9391 8.42143 9.92172 9.17157 9.17157C9.92172 8.42143 10.9391 8 12 8H16M18 4H30C31.1046 4 32 4.89543 32 6V10C32 11.1046 31.1046 12 30 12H18C16.8954 12 16 11.1046 16 10V6C16 4.89543 16.8954 4 18 4Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M16.5 37.5C16.5 38.2956 16.184 39.0587 15.6214 39.6213C15.0587 40.1839 14.2957 40.5 13.5 40.5C12.7044 40.5 11.9413 40.1839 11.3787 39.6213C10.8161 39.0587 10.5 38.2956 10.5 37.5M16.5 37.5C16.5 36.7043 16.184 35.9413 15.6214 35.3787C15.0587 34.8161 14.2957 34.5 13.5 34.5C12.7044 34.5 11.9413 34.8161 11.3787 35.3787C10.8161 35.9413 10.5 36.7043 10.5 37.5M16.5 37.5H28.5M10.5 37.5H6.75004C6.1533 37.5 5.581 37.2629 5.15905 36.841C4.73709 36.419 4.50004 35.8467 4.50004 35.25V28.5M28.5 37.5H33M28.5 37.5V28.5M4.50004 28.5V13.23C4.49686 12.6823 4.69696 12.153 5.06162 11.7443C5.42627 11.3357 5.92955 11.0769 6.47404 11.018C13.1401 10.326 19.8599 10.326 26.526 11.018C27.656 11.134 28.5 12.094 28.5 13.23V15.146M4.50004 28.5H28.5M39 37.5C39 38.2956 38.684 39.0587 38.1214 39.6213C37.5587 40.1839 36.7957 40.5 36 40.5C35.2044 40.5 34.4413 40.1839 33.8787 39.6213C33.3161 39.0587 33 38.2956 33 37.5M39 37.5C39 36.7043 38.684 35.9413 38.1214 35.3787C37.5587 34.8161 36.7957 34.5 36 34.5C35.2044 34.5 34.4413 34.8161 33.8787 35.3787C33.3161 35.9413 33 36.7043 33 37.5M39 37.5H41.25C42.492 37.5 43.508 36.492 43.43 35.252C43.0281 28.6473 40.8038 22.2831 37.004 16.866C36.6421 16.3585 36.1696 15.94 35.6221 15.642C35.0747 15.3441 34.4667 15.1744 33.844 15.146H28.5M28.5 15.146V28.5" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </div>
                         <h5 class="card-title">Proveedores</h5>
                     </div>
                 </a>
             </div>
-            <div class="col-6 col-sm-4 col-md-3">
+            <div class="col custom-col-5">
                 <a asp-controller="Usuarios" asp-action="Index" class="card shadow-sm h-100 text-decoration-none">
                     <div class="card-body">
                         <div class="card-title">
@@ -53,37 +52,29 @@
                     </div>
                 </a>
             </div>
-            <div class="col-6 col-sm-4 col-md-3">
+            <div class="col custom-col-5">
                 <a asp-controller="Reportes" asp-action="Index" class="card shadow-sm h-100 text-decoration-none">
                     <div class="card-body">
-                        <div class="card-title">
-                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M32 42V10C32 8.93913 31.5786 7.92172 30.8284 7.17157C30.0783 6.42143 29.0609 6 28 6H20C18.9391 6 17.9217 6.42143 17.1716 7.17157C16.4214 7.92172 16 8.93913 16 10V42M8 14H40C42.2091 14 44 15.7909 44 18V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V18C4 15.7909 5.79086 14 8 14Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M31.5 21V12C31.5 10.0109 30.7098 8.10322 29.3033 6.6967C27.8967 5.29018 25.9891 4.5 24 4.5C22.0108 4.5 20.1032 5.29018 18.6967 6.6967C17.2901 8.10322 16.5 10.0109 16.5 12V21M39.212 17.014L41.738 41.014C41.878 42.344 40.838 43.5 39.5 43.5H8.49997C8.18439 43.5003 7.87226 43.4343 7.58387 43.3061C7.29547 43.178 7.03727 42.9906 6.82602 42.7561C6.61477 42.5217 6.4552 42.2454 6.35768 41.9453C6.26016 41.6451 6.22687 41.3278 6.25997 41.014L8.78797 17.014C8.84628 16.4611 9.10722 15.9494 9.52047 15.5775C9.93372 15.2056 10.47 14.9999 11.026 15H36.974C38.126 15 39.092 15.87 39.212 17.014ZM17.25 21C17.25 21.1989 17.171 21.3897 17.0303 21.5303C16.8896 21.671 16.6989 21.75 16.5 21.75C16.3011 21.75 16.1103 21.671 15.9696 21.5303C15.829 21.3897 15.75 21.1989 15.75 21C15.75 20.8011 15.829 20.6103 15.9696 20.4697C16.1103 20.329 16.3011 20.25 16.5 20.25C16.6989 20.25 16.8896 20.329 17.0303 20.4697C17.171 20.6103 17.25 20.8011 17.25 21ZM32.25 21C32.25 21.1989 32.171 21.3897 32.0303 21.5303C31.8896 21.671 31.6989 21.75 31.5 21.75C31.3011 21.75 31.1103 21.671 30.9696 21.5303C30.829 21.3897 30.75 21.1989 30.75 21C30.75 20.8011 30.829 20.6103 30.9696 20.4697C31.1103 20.329 31.3011 20.25 31.5 20.25C31.6989 20.25 31.8896 20.329 32.0303 20.4697C32.171 20.6103 32.25 20.8011 32.25 21Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                         <h5 class="card-title">Reportes</h5>
                     </div>
                 </a>
             </div>
-            <div class="col-6 col-sm-4 col-md-3">
-                <a asp-controller="Auth" asp-action="Login" class="card shadow-sm h-100 text-decoration-none">
+            <div class="col custom-col-5">
+                <a asp-controller="Clientes" asp-action="Index" class="card shadow-sm h-100 text-decoration-none">
                     <div class="card-body">
                         <div class="card-title">
                             <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M16 24H32M24 16V32M42 24C42 34.4934 34.4934 42 24 42C13.5066 42 6 34.4934 6 24C6 13.5066 13.5066 6 24 6C34.4934 6 42 13.5066 42 24Z"
-                                      stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M33.8516 35V32.4444C33.8516 31.0889 33.3112 29.7888 32.3494 28.8303C31.3874 27.8719 30.0828 27.3333 28.7225 27.3333H23.5933H18.4641C17.6792 27.3333 16.9128 27.5126 16.2201 27.8484C15.7123 28.0946 15.2441 28.4249 14.8372 28.8303C13.8754 29.7888 13.335 31.0889 13.335 32.4444V35M28.7225 17.1111C28.7225 19.9339 26.4261 22.2222 23.5933 22.2222C20.7605 22.2222 18.4641 19.9339 18.4641 17.1111C18.4641 14.2883 20.7605 12 23.5933 12C26.4261 12 28.7225 14.2883 28.7225 17.1111Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M42 30.6936V28.9839C42 28.077 41.6463 27.2073 41.0167 26.566C40.3871 25.9248 39.5332 25.5645 38.6428 25.5645H35.2855H33.6069M38.6428 18.7256C38.6428 20.6141 37.1397 22.145 35.2855 22.145C33.4313 22.145 31.9282 20.6141 31.9282 18.7256C31.9282 16.8371 33.4313 15.3062 35.2855 15.3062C37.1397 15.3062 38.6428 16.8371 38.6428 18.7256Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M4.99996 30.6936V28.9839C4.99996 28.077 5.35369 27.2073 5.98327 26.566C6.61288 25.9248 7.46684 25.5645 8.35723 25.5645H11.7145H13.3931M8.35723 18.7256C8.35723 20.6141 9.86033 22.145 11.7145 22.145C13.5687 22.145 15.0718 20.6141 15.0718 18.7256C15.0718 16.8371 13.5687 15.3062 11.7145 15.3062C9.86033 15.3062 8.35723 16.8371 8.35723 18.7256Z" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </div>
-                        <h5 class="card-title">Login</h5>
+                        <h5 class="card-title">Clientes</h5>
                     </div>
                 </a>
             </div>
-
-        <!-- Imagen decorativa -->
-        <div class="mt-5">
-            <img src="~/images/deporte-banner.jpg" alt="Deporte"
-                 class="img-fluid rounded shadow"
-                 style="max-height: 300px; object-fit: cover;">
-        </div>
     </div>
 </div>

@@ -41,6 +41,13 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("filtrarPorDisciplina/{disciplinaId}")]
+        public async Task<IActionResult> FiltrarPorDisciplina(int disciplinaId)
+        {
+            var productos = await _productoService.ObtenerPorDisciplinaAsync(disciplinaId);
+            return Ok(productos);
+        }
+
         [HttpGet]
         public async Task<IActionResult> ObtenerProducto()
         {

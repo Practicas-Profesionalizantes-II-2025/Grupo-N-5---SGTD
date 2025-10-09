@@ -15,6 +15,16 @@ namespace Service.Implementations
         {
             _ProductoRepository = productoRepository;
         }
+        public async Task<List<ProductoReadDTO>> ObtenerPorDisciplinaAsync(int disciplinaId)
+        {
+            if (disciplinaId <= 0)
+                throw new ArgumentException("El ID de disciplina debe ser mayor a cero.");
+
+            // Asumiendo que tu repositorio tiene un método que permite filtrar por disciplina
+            var productos = await _ProductoRepository.FindByDisciplinaAsync(disciplinaId);
+
+            return _mapper.ToReadDtoList(productos);
+        }
 
         public async Task<List<ProductoReadDTO>> ObtenerTodosAsync()
         {
