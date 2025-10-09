@@ -9,8 +9,7 @@ namespace MVC.Models.DTOs.FacturaDto
         public DateTime FechaEmision { get; set; }
 
         [Required(ErrorMessage = "El monto es obligatorio.")]
-        [Range(1, int.MaxValue, ErrorMessage = "El monto debe ser mayor a 0.")]
-        public int Monto { get; set; }
+        public decimal Monto { get; set; }
 
         [Required(ErrorMessage = "La dirección fiscal es obligatoria.")]
         [StringLength(150, ErrorMessage = "La dirección fiscal no puede superar los 150 caracteres.")]
@@ -18,10 +17,6 @@ namespace MVC.Models.DTOs.FacturaDto
 
         [Required(ErrorMessage = "El ID fiscal es obligatorio.")]
         public int IdFiscal { get; set; }
-
-        [Required(ErrorMessage = "La descripción es obligatoria.")]
-        [StringLength(250, ErrorMessage = "La descripción no puede superar los 250 caracteres.")]
-        public string Descripcion { get; set; }
 
         [Required(ErrorMessage = "La razón social es obligatoria.")]
         [StringLength(100, ErrorMessage = "La razón social no puede superar los 100 caracteres.")]
@@ -35,5 +30,8 @@ namespace MVC.Models.DTOs.FacturaDto
 
         [Required(ErrorMessage = "Debe agregar al menos un producto.")]
         public List<FacturaProductoCreateDTO> Productos { get; set; } = new();
+
+        // Campo auxiliar que viene desde el input hidden del form
+        public string ProductosJson { get; set; }
     }
 }

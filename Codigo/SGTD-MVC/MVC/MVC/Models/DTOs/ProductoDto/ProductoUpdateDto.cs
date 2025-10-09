@@ -16,7 +16,7 @@ namespace MVC.Models.DTOs.ProductoDto
         public int Cantidad { get; set; }
 
         [Range(0, double.MaxValue, ErrorMessage = "El precio debe ser igual o mayor a 0.")]
-        public float Precio { get; set; }
+        public decimal Precio { get; set; }
 
         [Required(ErrorMessage = "El estado es obligatorio.")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un estado válido.")]

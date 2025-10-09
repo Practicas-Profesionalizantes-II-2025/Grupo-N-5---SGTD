@@ -10,7 +10,7 @@ namespace Shared.Entidades
     {
         public string Nombre { get; set; }
         public int Cantidad { get; set; }
-        public float Precio { get; set; }
+        public decimal Precio { get; set; }
 
         public Estado Estado { get; set; }
         public int EstadoId { get; set; }

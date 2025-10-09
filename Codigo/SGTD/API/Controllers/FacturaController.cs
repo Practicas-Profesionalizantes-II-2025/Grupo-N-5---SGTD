@@ -88,32 +88,6 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarFactura(int id, [FromBody] FacturaUpdateDTO dto)
-        {
-            if (id <= 0)
-                return BadRequest("El ID debe ser mayor a cero.");
-            if (dto == null)
-                return BadRequest("Los datos de actualización no pueden ser nulos.");
-            try
-            {
-                var factura = await _facturaService.Editar(id, dto);
-                if (factura != null)
-                    return Ok(factura);
-
-
-                return BadRequest(factura);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Error interno al actualizar la factura.");
-            }
-        }
-
         [HttpDelete("{id}")]
         public async Task<IActionResult> EliminarFactura(int id)
         {

@@ -13,9 +13,6 @@ namespace Service.Mappers
     {
         public partial Factura ToEntity(FacturaCreateDTO dto);
         public partial FacturaReadDTO ToReadDto(Factura factura);
-
-        public partial void UpdateEntity(FacturaUpdateDTO dto, Factura entity);
-
         public List<FacturaReadDTO> ToReadDtoList(IEnumerable<Factura> entities)
         => entities.Select(ToReadDto).ToList();
     }

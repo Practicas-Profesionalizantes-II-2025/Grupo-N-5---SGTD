@@ -26,10 +26,9 @@ namespace Shared.Entidades
     public class Factura : EntidadBase
     {
         public DateTime FechaEmision { get; set; }
-        public int Monto { get; set; }
+        public decimal Monto { get; set; }
         public string DireccionFiscal { get; set; }
         public int IdFiscal { get; set; }
-        public string Descripcion { get; set; }
         public string RazonSocial { get; set; }
 
         public int UsuarioId { get; set; }

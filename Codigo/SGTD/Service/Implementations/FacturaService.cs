@@ -56,7 +56,6 @@ namespace Service.Implementations
                 FechaEmision = dto.FechaEmision,
                 DireccionFiscal = dto.DireccionFiscal,
                 IdFiscal = dto.IdFiscal,
-                Descripcion = dto.Descripcion,
                 RazonSocial = dto.RazonSocial,
                 UsuarioId = dto.UsuarioId,
                 ClienteId = dto.ClienteId,
@@ -79,22 +78,6 @@ namespace Service.Implementations
                         .Include(f => f.Cliente)
                              .Include(f => f.Usuario)
                                     .FirstOrDefaultAsync(f => f.Id == factura.Id);
-
-            return _mapper.ToReadDto(factura);
-        }
-
-        public async Task<FacturaReadDTO> Editar(int id, FacturaUpdateDTO dto)
-        {
-            if (id <= 0)
-                throw new ArgumentException("El ID debe ser mayor a cero.");
-
-            var factura = await _facturaRepository.ObtenerPorId(id);
-            if (factura == null)
-                throw new KeyNotFoundException($"No se encontró ninguna factura con ID {id}.");
-
-            factura.UpdatedDate = DateTime.Now;
-            _mapper.UpdateEntity(dto, factura);
-            await _facturaRepository.Update(factura);
 
             return _mapper.ToReadDto(factura);
         }
