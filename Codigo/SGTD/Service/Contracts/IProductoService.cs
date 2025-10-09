@@ -9,6 +9,7 @@ namespace Service.Contracts
 {
     public interface IProductoService
     {
+        Task<List<ProductoReadDTO>> ObtenerPorDisciplinaAsync(int disciplinaId);
         Task<List<ProductoReadDTO>> ObtenerTodosAsync();
         Task<ProductoReadDTO> ObtenerPorIdAsync(int id);
         Task<ProductoReadDTO> CrearAsync(ProductoCreateDTO dto);

@@ -1,0 +1,149 @@
+﻿@model MVC.Models.DTOs.ClienteDto.ClienteUpdateDTO
+
+@{
+    ViewData["Title"] = "Editar Cliente";
+}
+
+<link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/select.css" asp-append-version="true" />
+
+<div class="content-container p-4 edit-cliente-page">
+    <div class="form-card">
+        <h2 class="form-title">EDITAR CLIENTE</h2>
+
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <!-- Datos principales -->
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre completo", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Nombre)
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Telefono, new { @class = "form-input", placeholder = "Teléfono", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Telefono)
+                </div>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="form-row">
+                <!-- Provincias -->
+                <div style="width:100%;">
+                    <div class="custom-select-container" id="provinciaSelect">
+                        <button type="button" class="custom-select-trigger">
+                            <span class="selected-value">@(!string.IsNullOrEmpty(Model.Provincia) ? Model.Provincia : "Seleccione provincia")</span>
+                            <span class="arrow">▼</span>
+                        </button>
+                        <ul class="custom-select-options">
+                            @if (ViewBag.Provincias != null && ((IEnumerable<MVC.Controllers.ProvinciaDTO>)ViewBag.Provincias).Any())
+                            {
+                                foreach (var prov in (IEnumerable<MVC.Controllers.ProvinciaDTO>)ViewBag.Provincias)
+                                {
+                                    var selected = Model.Provincia == prov.Nombre;
+                                    <li data-value="@prov.Nombre" class="@(selected ? "selected" : "")">@prov.Nombre</li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="disabled">Error, no hay provincias disponibles</li>
+                            }
+                        </ul>
+
+                        <input type="hidden" id="ProvinciaNombre" name="Provincia" value="@Model.Provincia" />
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Provincia)
+                </div>
+
+                <!-- Ciudades -->
+                <div style="width:100%;">
+                    <div class="custom-select-container" id="ciudadSelect">
+                        <button type="button" class="custom-select-trigger">
+                            <span class="selected-value">@(!string.IsNullOrEmpty(Model.Ciudad) ? Model.Ciudad : "Seleccione ciudad")</span>
+                            <span class="arrow">▼</span>
+                        </button>
+                        <ul class="custom-select-options">
+                            @if (ViewBag.Ciudades != null && ((IEnumerable<MVC.Controllers.CiudadDTO>)ViewBag.Ciudades).Any())
+                            {
+                                foreach (var ciudad in (IEnumerable<MVC.Controllers.CiudadDTO>)ViewBag.Ciudades)
+                                {
+                                    var selected = Model.Ciudad == ciudad.Nombre;
+                                    <li data-value="@ciudad.Nombre" class="@(selected ? "selected" : "")">@ciudad.Nombre</li>
+                                }
+                            }
+                            else if (!string.IsNullOrEmpty(Model.Ciudad))
+                            {
+                                <li data-value="@Model.Ciudad" class="selected">@Model.Ciudad</li>
+                            }
+                        </ul>
+                        <input type="hidden" id="CiudadNombre" name="Ciudad" value="@Model.Ciudad" />
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Ciudad)
+                </div>
+
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Direccion, new { @class = "form-input", placeholder = "Dirección", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Direccion)
+                </div>
+            </div>
+
+            <!-- Teléfono y DNI -->
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-input", placeholder = "DNI", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Dni)
+                </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-lg btn-edit">VOLVER</a>
+                <button type="submit" class="btn btn-lg btn-add">GUARDAR</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/select.js" defer asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const provinciaContainer = document.getElementById("provinciaSelect");
+            const ciudadContainer = document.getElementById("ciudadSelect");
+            const ciudadOptionsList = ciudadContainer.querySelector(".custom-select-options");
+
+            // Cambio de provincia → carga ciudades
+            provinciaContainer.addEventListener("custom-select:change", async (e) => {
+                const provinciaNombre = e.detail.text;
+                provinciaContainer.querySelector("#ProvinciaNombre").value = provinciaNombre;
+
+                ciudadOptionsList.innerHTML = "";
+                ciudadContainer.querySelector(".selected-value").textContent = "Seleccione ciudad";
+                ciudadContainer.querySelector("#CiudadNombre").value = "";
+
+                try {
+                    const res = await fetch(`/Clientes/GetCiudades?provinciaNombre=${encodeURIComponent(provinciaNombre)}`);
+                    const ciudades = await res.json();
+                    ciudades.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+                    ciudades.forEach(c => {
+                        const li = document.createElement("li");
+                        li.textContent = c.nombre;
+                        li.dataset.value = c.nombre;
+                        ciudadOptionsList.appendChild(li);
+                    });
+                } catch (err) {
+                    console.error("Error cargando ciudades:", err);
+                }
+            });
+
+            // Cambio de ciudad
+            ciudadContainer.addEventListener("custom-select:change", (e) => {
+                const ciudadNombre = e.detail.text;
+                ciudadContainer.querySelector("#CiudadNombre").value = ciudadNombre;
+            });
+        });
+    </script>
+}

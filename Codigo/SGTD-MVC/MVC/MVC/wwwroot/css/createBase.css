@@ -139,3 +139,65 @@ input:-internal-autofill-selected {
     background-color: #16222a !important;
     color: fieldtext !important;
 }
+
+<!-- TOTAL Y USUARIO -->
+<div class="totales-card mt-3" >
+<div class="totales-row" >
+<div class="totales-item" >
+<label > Total a pagar:</label >
+<span id="totalPagar" class="valor-total" > -</span >
+</div >
+<div class="totales-item" >
+<label > Usuario:</label >
+<span class="valor-total" > @User.Identity?.Name</span >
+</div >
+</div >
+</div >
+Y luego agregá este CSS (podés ponerlo al final del bloque <style> de tu vista o, mejor aún, en tu createBase.css):
+
+css
+Copiar código
+/* ---------- CONTENEDOR DE TOTALES ---------- */
+.totales-card {
+    background: #0f141a;
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #e6edf3;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Fila de totales: distribuye Total y Usuario */
+.totales-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom : 2px solid #0f141a;
+}
+
+/* Cada item dentro del contenedor */
+.totales-item label {
+    color: #BDC3C7;
+    font-weight: 500;
+    margin-right: 8px;
+}
+
+.valor-total {
+    font-weight: 600;
+    color: #4a90d9;
+    font-size: 1.05rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .totales-row {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+}

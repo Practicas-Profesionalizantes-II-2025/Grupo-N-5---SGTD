@@ -58,6 +58,13 @@ builder.Services.AddHttpClient("DisciplinasApi", client =>
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 
+builder.Services.AddHttpClient("ClientesApi", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5079/api/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
+
 builder.Services.AddDistributedMemoryCache();
     builder.Services.AddSession(options =>
     {

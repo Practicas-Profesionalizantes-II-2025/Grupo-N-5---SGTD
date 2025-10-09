@@ -100,48 +100,47 @@
 
 @section Scripts {
     <script>
-        // Variables para controlar la selección
-        let reporteSeleccionado = null;
+        document.addEventListener("DOMContentLoaded", function () {
+            // Variables para controlar la selección
+            let reporteSeleccionado = null;
 
-        // Función para seleccionar una fila
-        function seleccionarFila(fila, idReporte) {
-            // Remover selección previa
-            document.querySelectorAll('#tabla-body tr').forEach(r => {
-                r.classList.remove('selected-row');
-            });
+            // Función para seleccionar una fila
+            function seleccionarFila(fila, idReporte) {
+                // Remover selección previa
+                document.querySelectorAll('#tabla-body tr').forEach(r => {
+                    r.classList.remove('selected-row');
+                });
 
-            // Marcar nueva selección
-            fila.classList.add('selected-row');
-            reporteSeleccionado = idReporte;
+                // Marcar nueva selección
+                fila.classList.add('selected-row');
+                reporteSeleccionado = idReporte;
 
-            // Habilitar botón de ver detalles
-            document.getElementById('btnVerDetalles').disabled = false;
-            document.getElementById('btnDescargarPdf').disabled = false;
-        }
-
-        // Simple filtro cliente (opcional) — filtra por texto en la tabla
-        document.getElementById('q').addEventListener('input', function () {
-            const q = this.value.toLowerCase();
-            const rows = document.querySelectorAll('#tabla-body tr');
-            rows.forEach(r => {
-                const text = r.innerText.toLowerCase();
-                r.style.display = text.includes(q) ? '' : 'none';
-            });
-        });
-
-        // Configurar botón de ver detalles
-        document.getElementById('btnVerDetalles').addEventListener('click', function() {
-            if (reporteSeleccionado) {
-                window.location.href = `/Reportes/Detalles/${reporteSeleccionado}`;
+                // Habilitar botón de ver detalles
+                document.getElementById('btnVerDetalles').disabled = false;
+                document.getElementById('btnDescargarPdf').disabled = false;
             }
-        });
 
-        document.getElementById('btnGenerarVenta').addEventListener('click', function () {
-            window.location.href = `/Ventas/Create`;
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+            // Simple filtro cliente (opcional) — filtra por texto en la tabla
+            document.getElementById('q').addEventListener('input', function () {
+                const q = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#tabla-body tr');
+                rows.forEach(r => {
+                    const text = r.innerText.toLowerCase();
+                    r.style.display = text.includes(q) ? '' : 'none';
+                });
+            });
+
+            // Configurar botón de ver detalles
+            document.getElementById('btnVerDetalles').addEventListener('click', function() {
+                if (reporteSeleccionado) {
+                    window.location.href = `/Reportes/Detalles/${reporteSeleccionado}`;
+                }
+            });
+
+            document.getElementById('btnGenerarVenta').addEventListener('click', function () {
+                window.location.href = `/Ventas/Create`;
+            });
+
             const searchInput = document.querySelector('.search-input');
             const inputGroup = document.querySelector('.input-group');
 
@@ -156,16 +155,14 @@
                     inputGroup.classList.remove('input-group-active');
                 });
             }
-        });
-    </script>
-    </<script>
-                  document.getElementById('btnDescargarPdf').addEventListener('click', function() {
-                  if (reporteSeleccionado) {
-                      window.location.href = `/Reportes/DescargarPdf/${reporteSeleccionado}`;
-                  }
-              });
-    </script>
 
+            document.getElementById('btnDescargarPdf').addEventListener('click', function() {
+                if (reporteSeleccionado) {
+                    window.location.href = `/Reportes/DescargarPdf/${reporteSeleccionado}`;
+                }
+            });
+        });
+	</script>
 }
 
 <style>

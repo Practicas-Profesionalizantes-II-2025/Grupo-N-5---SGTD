@@ -57,9 +57,9 @@
             <i class="bi bi-box-seam"></i><span class="nav-text">Stock</span>
         </a>
         <a class="nav-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Proveedores" ? "active" : "")" asp-controller="Proveedores" asp-action="Index" title="Proveedores">
-            <svg class="mar-18px" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path d="M32 8H36C37.0609 8 38.0783 8.42143 38.8284 9.17157C39.5786 9.92172 40 10.9391 40 12V40C40 41.0609 39.5786 42.0783 38.8284 42.8284C38.0783 43.5786 37.0609 44 36 44H12C10.9391 44 9.92172 43.5786 9.17157 42.8284C8.42143 42.0783 8 41.0609 8 40V12C8 10.9391 8.42143 9.92172 9.17157 9.17157C9.92172 8.42143 10.9391 8 12 8H16M18 4H30C31.1046 4 32 4.89543 32 6V10C32 11.1046 31.1046 12 30 12H18C16.8954 12 16 11.1046 16 10V6C16 4.89543 16.8954 4 18 4Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-			</svg>
+            <svg class="mar-18px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+            </svg>
 
             <i class="bi bi-truck"></i><span class="nav-text">Proveedores</span>
         </a>
@@ -71,12 +71,20 @@
             <i class="bi bi-people"></i><span class="nav-text">Usuarios</span>
         </a>
         <a class="nav-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Reportes" ? "active" : "")" asp-controller="Reportes" asp-action="Index" title="Reportes">
-            <svg class="mar-18px" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M32 42V10C32 8.93913 31.5786 7.92172 30.8284 7.17157C30.0783 6.42143 29.0609 6 28 6H20C18.9391 6 17.9217 6.42143 17.1716 7.17157C16.4214 7.92172 16 8.93913 16 10V42M8 14H40C42.2091 14 44 15.7909 44 18V38C44 40.2091 42.2091 42 40 42H8C5.79086 42 4 40.2091 4 38V18C4 15.7909 5.79086 14 8 14Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <svg class="mar-18px" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
             </svg>
+
             <i class="bi bi-graph-up"></i><span class="nav-text">Reportes</span>
         </a>
-
+        <a class="nav-item @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Clientes" ? "active" : "")" asp-controller="Clientes" asp-action="Index" title="Clientes">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18.1552 19V17.4444C18.1552 16.6193 17.8338 15.828 17.2619 15.2445C16.69 14.6611 15.9142 14.3333 15.1054 14.3333H12.0556H9.00583C8.53912 14.3333 8.08343 14.4425 7.67155 14.6469C7.36962 14.7967 7.09122 14.9978 6.8493 15.2445C6.27737 15.828 5.95605 16.6193 5.95605 17.4444V19M15.1054 8.11111C15.1054 9.82934 13.74 11.2222 12.0556 11.2222C10.3713 11.2222 9.00583 9.82934 9.00583 8.11111C9.00583 6.39289 10.3713 5 12.0556 5C13.74 5 15.1054 6.39289 15.1054 8.11111Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M22.9999 15.5746V14.558C22.9999 14.0188 22.7896 13.5016 22.4152 13.1203C22.0408 12.7391 21.5331 12.5248 21.0037 12.5248H19.0074H18.0093M21.0037 8.45848C21.0037 9.58138 20.1099 10.4917 19.0074 10.4917C17.905 10.4917 17.0112 9.58138 17.0112 8.45848C17.0112 7.33558 17.905 6.42529 19.0074 6.42529C20.1099 6.42529 21.0037 7.33558 21.0037 8.45848Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M1.00012 15.5746V14.558C1.00012 14.0188 1.21045 13.5016 1.58479 13.1203C1.95916 12.7391 2.46692 12.5248 2.99634 12.5248H4.99255H5.99066M2.99634 8.45848C2.99634 9.58138 3.89007 10.4917 4.99255 10.4917C6.09504 10.4917 6.98877 9.58138 6.98877 8.45848C6.98877 7.33558 6.09504 6.42529 4.99255 6.42529C3.89007 6.42529 2.99634 7.33558 2.99634 8.45848Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <i class="bi bi-graph-up"></i><span class="nav-text">Clientes</span>
+        </a>
         <form asp-controller="Cuenta" asp-action="Logout" method="post">
 			<button class="btn-logout">
 				<svg class="mar-18px" width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +106,13 @@
         @await Html.PartialAsync("Modals/_StockModal", new MVC.Models.ViewModels.ProductoStockVM())
     </main>
 
-    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('expanded');
+        }
+    </script>
+
 
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

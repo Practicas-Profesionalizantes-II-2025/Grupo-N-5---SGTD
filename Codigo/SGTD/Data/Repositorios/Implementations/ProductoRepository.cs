@@ -14,7 +14,12 @@ namespace Data.Implementations
     public class ProductoRepository : Repository<Producto>, IProductoRepository
     {
         public ProductoRepository(AppDbContext context) : base(context) { }
-
+        public async Task<List<Producto>> FindByDisciplinaAsync(int disciplinaId)
+        {
+            return await _context.Productos
+                .Where(p => p.DisciplinaId == disciplinaId)
+                .ToListAsync();
+        }
         public async Task<bool> ExistePorNombreAsync(string nombre, int? excludeUserId = null)
         {
             return await _context.Productos

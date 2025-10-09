@@ -1,0 +1,135 @@
+﻿@model MVC.Models.DTOs.ClienteDto.ClienteCreateDTO
+
+@{
+    ViewData["Title"] = "Añadir Cliente";
+}
+
+<link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/select.css" asp-append-version="true" />
+
+<div class="content-container p-4 add-cliente-page">
+    <div class="form-card">
+        <h2 class="form-title">AÑADIR CLIENTE</h2>
+
+        <form asp-action="Create" method="post">
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Nombre)
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-input", placeholder = "Teléfono", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Dni)
+                </div>
+            </div>
+
+            <div class="form-row">
+                <!-- Select de Provincias -->
+                <div style="width:100%;">
+                    <div class="custom-select-container" id="provinciaSelect">
+                        <button type="button" class="custom-select-trigger">
+                            <span class="selected-value placeholder">Seleccione provincia</span>
+                            <span class="arrow">▼</span>
+                        </button>
+
+                        <ul class="custom-select-options">
+                            @if (ViewBag.Provincias != null && ((IEnumerable<MVC.Controllers.ProvinciaDTO>)ViewBag.Provincias).Any())
+                            {
+                                @foreach (var prov in (IEnumerable<MVC.Controllers.ProvinciaDTO>)ViewBag.Provincias)
+                                {
+                                    <li data-value="@prov.Id">@prov.Nombre</li>
+                                }
+                            }
+                            else
+                            {
+                                <li class="disabled">Error, no hay provincias disponibles</li>
+                            }
+                        </ul>
+
+                        <input type="hidden" name="ProvinciaId" />
+                        <input type="hidden" id="ProvinciaNombre" name="Provincia" />
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "field-validation-error" })
+                </div>
+
+                <!-- Select de Ciudades -->
+                <div style="width:100%;">
+                    <div class="custom-select-container" id="ciudadSelect">
+                        <button type="button" class="custom-select-trigger">
+                            <span class="selected-value placeholder">Seleccione ciudad</span>
+                            <span class="arrow">▼</span>
+                        </button>
+                        <ul class="custom-select-options">
+                            <!-- Vacío: se llenará dinámicamente al seleccionar provincia -->
+                        </ul>
+                        <input type="hidden" name="CiudadId" />
+                        <input type="hidden" id="CiudadNombre" name="Ciudad" />
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Ciudad)
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Telefono, new { @class = "form-input", placeholder = "Teléfono", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Telefono)
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Direccion, new { @class = "form-input", placeholder = "Dirección", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Direccion)
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Index" class="btn btn-lg btn-edit">VOLVER</a>
+                <button type="submit" class="btn btn-lg btn-add">AÑADIR</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/select.js" defer asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const provinciaContainer = document.getElementById("provinciaSelect");
+            const ciudadContainer = document.getElementById("ciudadSelect");
+            const ciudadOptionsList = ciudadContainer.querySelector(".custom-select-options");
+
+            provinciaContainer.addEventListener("custom-select:change", async (e) => {
+                const provinciaNombre = e.detail.text;
+                const provinciaInput = provinciaContainer.querySelector("#ProvinciaNombre");
+                provinciaInput.value = provinciaNombre;
+
+                ciudadOptionsList.innerHTML = "";
+                ciudadContainer.querySelector(".selected-value").textContent = "Seleccione ciudad";
+                ciudadContainer.querySelector("input[name=CiudadId]").value = "";
+                ciudadContainer.querySelector("#CiudadNombre").value = "";
+
+                try {
+                    const res = await fetch(`/Clientes/GetCiudades?provinciaNombre=${encodeURIComponent(provinciaNombre)}`);
+                    const ciudades = await res.json();
+
+                    ciudades.sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+                    ciudades.forEach(c => {
+                        const li = document.createElement("li");
+                        li.textContent = c.nombre;
+                        li.dataset.value = c.id || c.nombre;
+                        ciudadOptionsList.appendChild(li);
+                    });
+                } catch (err) {
+                    console.error("Error cargando ciudades:", err);
+                }
+            });
+
+            ciudadContainer.addEventListener("custom-select:change", (e) => {
+                const ciudadNombre = e.detail.text;
+                const ciudadInput = ciudadContainer.querySelector("#CiudadNombre");
+                ciudadInput.value = ciudadNombre;
+            });
+        });
+    </script>
+}

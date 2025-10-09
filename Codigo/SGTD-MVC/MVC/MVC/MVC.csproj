@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\images\Clipboard.svg" />
+    <Content Remove="wwwroot\images\Truck.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="wwwroot\js\switch.js">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
