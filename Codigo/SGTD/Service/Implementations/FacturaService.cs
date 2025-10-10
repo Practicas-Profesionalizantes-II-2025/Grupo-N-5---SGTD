@@ -11,17 +11,17 @@ namespace Service.Implementations
     public class FacturaService : IFacturaService
     {
         private IFacturaRepository _facturaRepository;
+        private readonly IProductoService _productoService;
         private readonly FacturaMapper _mapper = new FacturaMapper();
 
-        public FacturaService(IFacturaRepository facturaRepository)
+        public FacturaService(IFacturaRepository facturaRepository, IProductoService productoService)
         {
             _facturaRepository = facturaRepository;
+            _productoService = productoService;
         }
 
         public async Task<List<FacturaReadDTO>> ObtenerTodosAsync()
         {
-           // var factura = await _facturaRepository.FindAllAsync();
-
             var facturasConRelaciones = await _facturaRepository.Query()
                   .Include(f => f.FacturaProductos)
                       .ThenInclude(fp => fp.Producto)
@@ -29,7 +29,8 @@ namespace Service.Implementations
                   .Include(f => f.Usuario)
                   .ToListAsync();
 
-            return _mapper.ToReadDtoList(facturasConRelaciones);
+            // Usar el mapping que incluye los productos
+            return _mapper.ToReadDtoListWithProductos(facturasConRelaciones);
         }
 
         public async Task<FacturaReadDTO> ObtenerPorIdAsync(int id)
@@ -39,64 +40,36 @@ namespace Service.Implementations
 
             var factura = await _facturaRepository.Query()
                 .Include(f => f.FacturaProductos)
-                .ThenInclude(fp => fp.Producto)
+                    .ThenInclude(fp => fp.Producto)
                 .Include(f => f.Cliente)
-                 .Include(f => f.Usuario)
+                .Include(f => f.Usuario)
                 .FirstOrDefaultAsync(f => f.Id == id);
+
             if (factura == null)
                 throw new KeyNotFoundException($"No se encontró ninguna factura con ID {id}.");
 
-            return _mapper.ToReadDto(factura);
+            // Devolver DTO que incluye los productos
+            return _mapper.ToReadDtoWithProductos(factura);
         }
 
         public async Task<FacturaReadDTO> CrearAsync(FacturaCreateDTO dto)
         {
-            var factura = new Factura
-            {
-                FechaEmision = dto.FechaEmision,
-                DireccionFiscal = dto.DireccionFiscal,
-                IdFiscal = dto.IdFiscal,
-                Descripcion = dto.Descripcion,
-                RazonSocial = dto.RazonSocial,
-                UsuarioId = dto.UsuarioId,
-                ClienteId = dto.ClienteId,
-                FacturaProductos = dto.Productos.Select(p => new FacturaProducto
-                {
-                    ProductoId = p.ProductoId,
-                    Cantidad = p.Cantidad,
-                    PrecioUnitario = p.PrecioUnitario
-                }).ToList()
-            };
+            var factura = _mapper.ToEntity(dto);
+            _mapper.CreateMapProductos(dto, factura);
+            factura.Monto = factura.FacturaProductos.Sum(fp => fp.Cantidad * fp.PrecioUnitario);
+            
+            await _productoService.RestarStockAsync(dto.Productos);
+            await _facturaRepository.Create(factura);          
 
-            // Calcular monto total
-            factura.Monto = factura.FacturaProductos.Sum(p => p.Cantidad * (int)p.PrecioUnitario);
-
-            await _facturaRepository.Create(factura);
-
+            // Cargar la factura guardada con relaciones para devolver un DTO completo
             var facturaConRelaciones = await _facturaRepository.Query()
                 .Include(f => f.FacturaProductos)
                     .ThenInclude(fp => fp.Producto)
-                        .Include(f => f.Cliente)
-                             .Include(f => f.Usuario)
-                                    .FirstOrDefaultAsync(f => f.Id == factura.Id);
+                .Include(f => f.Cliente)
+                .Include(f => f.Usuario)
+                .FirstOrDefaultAsync(f => f.Id == factura.Id);
 
-            return _mapper.ToReadDto(factura);
-        }
-
-        public async Task<FacturaReadDTO> Editar(int id, FacturaUpdateDTO dto)
-        {
-            if (id <= 0)
-                throw new ArgumentException("El ID debe ser mayor a cero.");
-
-            var factura = await _facturaRepository.ObtenerPorId(id);
-            if (factura == null)
-                throw new KeyNotFoundException($"No se encontró ninguna factura con ID {id}.");
-
-            factura.UpdatedDate = DateTime.Now;
-            _mapper.UpdateEntity(dto, factura);
-            await _facturaRepository.Update(factura);
-
-            return _mapper.ToReadDto(factura);
+            return _mapper.ToReadDtoWithProductos(facturaConRelaciones ?? factura);
         }
 
         public async Task Eliminar(int id)
@@ -104,11 +77,18 @@ namespace Service.Implementations
             if (id <= 0)
                 throw new ArgumentException("El ID debe ser mayor a cero.");
 
-            var estado = await _facturaRepository.ObtenerPorId(id);
-            if (estado == null)
+            // Cargar la factura completa (incluye productos) antes de eliminar
+            var facturaAEliminar = await _facturaRepository.Query()
+                .Include(f => f.FacturaProductos)
+                    .ThenInclude(fp => fp.Producto)
+                .Include(f => f.Cliente)
+                .Include(f => f.Usuario)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+            if (facturaAEliminar == null)
                 throw new KeyNotFoundException($"No se encontró ninguna factura con ID {id}.");
 
-            await _facturaRepository.Delete(estado);
+            await _facturaRepository.Delete(facturaAEliminar);
         }
     }
 }

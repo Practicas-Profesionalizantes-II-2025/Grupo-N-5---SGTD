@@ -1,6 +1,7 @@
 ﻿using Data.Contracts;
 using Service.Contracts;
 using Service.Mappers;
+using Shared.DTOs.FacturaDTOs;
 using Shared.DTOs.ProductoDTOs;
 using Shared.Entidades;
 
@@ -53,6 +54,40 @@ namespace Service.Implementations
             await _ProductoRepository.Create(producto);
 
             return _mapper.ToReadDtoWithProveedores(producto);
+        }
+        public async Task RestarStockAsync(IEnumerable<FacturaProductoCreateDTO> items)
+        {
+            if (items == null) throw new ArgumentNullException(nameof(items));
+
+            // Cargar todos los productos necesarios y validar
+            var productosAActualizar = new List<Producto>();
+
+            foreach (var item in items)
+            {
+                if (item == null) continue;
+
+                if (item.ProductoId <= 0) throw new ArgumentException("ProductoId inválido en el detalle de la factura.");
+                if (item.Cantidad <= 0) throw new ArgumentException("La cantidad debe ser mayor a cero en el detalle de la factura.");
+
+                var producto = await _ProductoRepository.ObtenerPorIdConProveedores(item.ProductoId);
+                if (producto == null)
+                    throw new KeyNotFoundException($"No se encontró ningún producto con ID {item.ProductoId}.");
+
+                if (producto.Cantidad < item.Cantidad)
+                    throw new InvalidOperationException($"Stock insuficiente para el producto '{producto.Nombre}' (ID {item.ProductoId}). Stock disponible: {producto.Cantidad}, requerido: {item.Cantidad}.");
+
+                // Aplicar la resta en la entidad cargada
+                producto.Cantidad -= item.Cantidad;
+                producto.UpdatedDate = DateTime.Now;
+
+                productosAActualizar.Add(producto);
+            }
+
+            // Persistir cambios (uno por uno — tu repo podría tener un método más eficiente)
+            foreach (var p in productosAActualizar)
+            {
+                await _ProductoRepository.Update(p);
+            }
         }
 
         public async Task<ProductoReadDTO> Editar(int id, ProductoUpdateDTO dto)

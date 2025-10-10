@@ -172,7 +172,7 @@
             <!-- CAMPOS OCULTOS -->
             <input type="hidden" asp-for="UsuarioId" />
             <input type="hidden" asp-for="Monto" id="montoTotal" />
-            <input type="hidden" id="productosJson" name="Productos" />
+            <input type="hidden" asp-for="ProductosJson" id="productosJson" />
             <input type="hidden" asp-for="FechaEmision" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
         </form>
     </div>

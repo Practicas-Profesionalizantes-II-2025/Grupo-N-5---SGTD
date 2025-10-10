@@ -5,6 +5,8 @@ using MVC.Models.DTOs.ProductoDto;
 using MVC.Models.DTOs.DisciplinaDto;
 using MVC.Models.DTOs.ClienteDto;
 using System.Text.Json;
+using Shared.DTOs.FacturaDTOs;
+using System.Security.Claims;
 
 namespace MVC.Controllers
 {
@@ -49,28 +51,51 @@ namespace MVC.Controllers
             return View();
         }
 
-        // POST: Create
         [HttpPost]
         public async Task<IActionResult> Create(FacturaCreateDTO factura)
         {
+            ModelState.Remove(nameof(FacturaCreateDTO.UsuarioId));
+            factura.UsuarioId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            if (!string.IsNullOrWhiteSpace(factura.ProductosJson))
+            {
+                factura.Productos = System.Text.Json.JsonSerializer.Deserialize<
+                    List<FacturaProductoCreateDTO>>(
+                        factura.ProductosJson,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+            }
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Deserializar manualmente el JSON a la lista real
+                    if (!string.IsNullOrWhiteSpace(factura.ProductosJson))
+                    {
+                        factura.Productos = System.Text.Json.JsonSerializer.Deserialize<
+                            List<FacturaProductoCreateDTO>>(factura.ProductosJson,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    }
+
+                    // Fecha actual si no se envió
+                    if (factura.FechaEmision == default)
+                        factura.FechaEmision = DateTime.Now;
+
                     var response = await _httpClient.PostAsJsonAsync(_apiBaseUrl, factura);
 
                     if (response.IsSuccessStatusCode)
                         return RedirectToAction(nameof(Index));
 
-                    ModelState.AddModelError("", "Error al crear la factura");
+                    ModelState.AddModelError("", "Error al crear la factura: " + response.ReasonPhrase);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Error de conexión con la API");
+                    ModelState.AddModelError("", "Error de conexión con la API: " + ex.Message);
                 }
             }
 
-            await CargarDatosSelects(); // recargar selects si falla
+            await CargarDatosSelects();
             return View(factura);
         }
 
