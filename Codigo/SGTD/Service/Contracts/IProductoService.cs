@@ -1,4 +1,5 @@
-﻿using Shared.DTOs.ProductoDTOs;
+﻿using Shared.DTOs.FacturaDTOs;
+using Shared.DTOs.ProductoDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Service.Contracts
         Task<List<ProductoReadDTO>> ObtenerTodosAsync();
         Task<ProductoReadDTO> ObtenerPorIdAsync(int id);
         Task<ProductoReadDTO> CrearAsync(ProductoCreateDTO dto);
+        Task RestarStockAsync(IEnumerable<FacturaProductoCreateDTO> items);
         Task<ProductoReadDTO> Editar(int id, ProductoUpdateDTO dto);
         Task Eliminar(int id);
     }
