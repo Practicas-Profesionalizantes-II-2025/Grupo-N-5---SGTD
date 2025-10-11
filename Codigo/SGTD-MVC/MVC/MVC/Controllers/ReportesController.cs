@@ -196,6 +196,28 @@ namespace MVC.Controllers
                 return StatusCode(500, "Error al descargar el PDF de la factura");
             }
         }
+
+        public async Task<IActionResult> Preview(int id)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"{_apiBaseUrl}/{id}/pdf");
+
+                if (!response.IsSuccessStatusCode)
+                    return NotFound("No se encontró la factura para generar el PDF");
+
+                var pdfBytes = await response.Content.ReadAsByteArrayAsync();
+                string base64Pdf = Convert.ToBase64String(pdfBytes);
+                ViewBag.PdfBase64 = base64Pdf;
+
+                return View();
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error al mostrar la vista previa del PDF");
+            }
+        }
+
     }
 }
 
