@@ -90,14 +90,64 @@
         <div class="actions-row mt-3 d-flex flex-wrap gap-3 justify-content-between sticky-footer">
             <a asp-controller="Reportes" asp-action="Create" class="btn btn-lg btn-add">GENERAR VENTA</a>
             <div class="ms-auto d-flex gap-2">
-                <button id="btnVerDetalles" class="btn btn-lg btn-edit" disabled>VER DETALLES</button>
-                <button id="btnDescargarPdf" class="btn btn-lg btn-secondary" disabled>📄 DESCARGAR PDF</button>
+                @* <button id="btnVerDetalles" class="btn btn-lg btn-edit" disabled>VER DETALLES</button>  *@
+                <button id="btnDescargarPdf" class="btn btn-lg btn-secondary" disabled>DESCARGAR PDF</button>
+                <button id="btnPreviewPdf" class="btn btn-lg btn-info" disabled>VER DETALLES</button>
             </div>
         </div>
     </div>
 </div>
-
 @section Scripts {
+    <script>
+        // Hacer la función global
+        let reporteSeleccionado = null;
+
+        function seleccionarFila(fila, idReporte) {
+            document.querySelectorAll('#tabla-body tr').forEach(r => {
+                r.classList.remove('selected-row');
+            });
+
+            fila.classList.add('selected-row');
+            reporteSeleccionado = idReporte;
+
+            //document.getElementById('btnVerDetalles').disabled = false;
+            document.getElementById('btnDescargarPdf').disabled = false;
+            document.getElementById('btnPreviewPdf').disabled = false;
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // document.getElementById('btnVerDetalles').addEventListener('click', function () {
+            //     if (reporteSeleccionado) {
+            //         window.location.href = `/Reportes/Detalles/${reporteSeleccionado}`;
+            //     }
+            // });
+
+            document.getElementById('btnPreviewPdf').addEventListener('click', function () {
+                if (reporteSeleccionado) {
+                    window.location.href = `/Reportes/Preview/${reporteSeleccionado}`;
+                }
+            });
+
+            document.getElementById('btnDescargarPdf').addEventListener('click', function () {
+                if (reporteSeleccionado) {
+                    window.location.href = `/Reportes/DescargarPdf/${reporteSeleccionado}`;
+                }
+            });
+
+            document.getElementById('q').addEventListener('input', function () {
+                const q = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#tabla-body tr');
+                rows.forEach(r => {
+                    const text = r.innerText.toLowerCase();
+                    r.style.display = text.includes(q) ? '' : 'none';
+                });
+            });
+
+        });
+    </script>
+}
+@* @section Scripts {
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Variables para controlar la selección
@@ -117,6 +167,7 @@
                 // Habilitar botón de ver detalles
                 document.getElementById('btnVerDetalles').disabled = false;
                 document.getElementById('btnDescargarPdf').disabled = false;
+                document.getElementById('btnPreviewPdf').disabled = false;
             }
 
             // Simple filtro cliente (opcional) — filtra por texto en la tabla
@@ -136,6 +187,11 @@
                 }
             });
 
+            document.getElementById('btnPreviewPdf').addEventListener('click', function () {
+            if (reporteSeleccionado) {
+                window.location.href = `/Reportes/Preview/${reporteSeleccionado}`;
+            }
+        });
             document.getElementById('btnGenerarVenta').addEventListener('click', function () {
                 window.location.href = `/Ventas/Create`;
             });
@@ -162,7 +218,7 @@
             });
         });
 	</script>
-}
+} *@
 
 <style>
     /* Estilo para fila seleccionada */
