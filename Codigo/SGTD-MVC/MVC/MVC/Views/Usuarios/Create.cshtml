@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/select.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/validation.css" asp-append-version="true" />
 
 <div class="content-container p-4 add-usuario-page">
     <div class="form-card">
@@ -15,12 +16,12 @@
         <form asp-action="Create" method="post">
             <div class="form-row">
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre"})
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Apellido, new { @class = "form-input", placeholder = "Apellido", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Apellido)
+                    @Html.TextBoxFor(m => m.Apellido, new { @class = "form-input", placeholder = "Apellido"})
+                    @Html.ValidationMessageFor(m => m.Apellido, "", new { @class = "validation-error" })
                 </div>
             </div>
             <div class="form-row">
@@ -40,11 +41,11 @@
                         <!-- hidden para enviar el valor seleccionado al servidor -->
                         <input type="hidden" name="TipoDocumento" />
                     </div>
-                    @Html.ValidationMessageFor(m => m.TipoDocumento, "", new { @class = "field-validation-error" })
+                    @Html.ValidationMessageFor(m => m.TipoDocumento, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.NumeroDocumento, new { @class = "form-input", placeholder = "Numero de Documento", required = "required" })
-                    @Html.ValidationMessageFor(m => m.NumeroDocumento)
+                    @Html.TextBoxFor(m => m.NumeroDocumento, new { @class = "form-input", placeholder = "Numero de Documento"})
+                    @Html.ValidationMessageFor(m => m.NumeroDocumento, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
                     <div class="custom-select-container" id="rolSelect">
@@ -72,13 +73,13 @@
                         <!-- 👇 Ahora sí mapea con tu DTO -->
                         <input type="hidden" name="RolId" />
                     </div>
-                    @Html.ValidationMessageFor(m => m.RolId, "", new { @class = "field-validation-error" })
+                    @Html.ValidationMessageFor(m => m.RolId, "", new { @class = "validation-error" })
                 </div>
             </div>
             <div class="form-row">
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.CorreoElectronico, new { @class = "form-input", placeholder = "Correo Electrónico", required = "required" })
-                    @Html.ValidationMessageFor(m => m.CorreoElectronico)
+                    @Html.TextBoxFor(m => m.CorreoElectronico, new { @class = "form-input", placeholder = "Correo Electrónico"})
+                    @Html.ValidationMessageFor(m => m.CorreoElectronico, "", new { @class = "validation-error" })
                 </div>
             </div>
             <div class="form-row">
@@ -109,7 +110,7 @@
                         <input type="hidden" name="ProvinciaId" />
                         <input type="hidden" id="ProvinciaNombre" name="Provincia" />
                     </div>
-                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "field-validation-error" })
+                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                 </div>
 
                 <!-- Select de Ciudades -->
@@ -130,12 +131,12 @@
             </div>
             <div class="form-row">
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Contrasenia, new { @class = "form-input", placeholder = "Contraseña", required = "required", type = "password" })
-                    @Html.ValidationMessageFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Contrasenia, new { @class = "form-input", placeholder = "Contraseña", type = "password" })
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.RepetirContrasenia, new { @class = "form-input", placeholder = "Repetir Contraseña", required = "required", type = "password" })
-                    @Html.ValidationMessageFor(m => m.RepetirContrasenia)
+                    @Html.TextBoxFor(m => m.RepetirContrasenia, new { @class = "form-input", placeholder = "Repetir Contraseña", type = "password" })
+                    @Html.ValidationMessageFor(m => m.RepetirContrasenia, "", new { @class = "validation-error" })
                 </div>
             </div>
             <div class="estado-row">

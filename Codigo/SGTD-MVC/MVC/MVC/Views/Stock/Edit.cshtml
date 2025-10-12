@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/select.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/multipleSelect.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/validation.css" asp-append-version="true" />
 
 <div class="content-container p-4 add-producto-page">
     <div class="form-card">
@@ -18,8 +19,8 @@
 
             <div class="form-row">
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre"})
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "validation-error" })
                 </div>
 
                 <div style="width:100%;">
@@ -45,7 +46,7 @@
                         }
                         <input type="hidden" name="DisciplinaId" value="@Model.DisciplinaId" />
                     </div>
-                    @Html.ValidationMessageFor(m => m.DisciplinaId, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(m => m.DisciplinaId, "", new { @class = "validation-error" })
                 </div>
 
                 <div style="width:100%;">
@@ -79,7 +80,7 @@
                             }
                         </div>
                     </div>
-                    @Html.ValidationMessageFor(m => m.ProveedorIds, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(m => m.ProveedorIds, "", new { @class = "validation-error" })
                 </div>
             </div>
 
