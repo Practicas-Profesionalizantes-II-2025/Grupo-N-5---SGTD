@@ -4,18 +4,18 @@
     ViewData["Title"] = "Añadir Proveedor";
 }
 
-<link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true"/>
+<link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/select.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/multipleSelect.css" asp-append-version="true" />
-
+<link rel="stylesheet" href="~/css/validation.css" asp-append-version="true" /> 
 
 <div class="content-container p-4 add-proveedor-page">
     <div class="form-card">
         <h2 class="form-title">AÑADIR PROVEEDOR</h2>
 
         <form asp-action="Create" method="post">
-			<div class="form-row">
+            <div class="form-row">
                 <div style="width:100%;">
                     <div class="custom-multiple-select-container multiple" data-name="RubroIds" style="width:100%;">
                         <button type="button" class="custom-multiple-select-trigger">
@@ -40,19 +40,21 @@
                         }
                         <div class="hidden-inputs"></div>
                     </div>
-                    @Html.ValidationMessageFor(m => m.RubroIds, "", new { @class = "text-danger" })
-                </div>                
+                    @Html.ValidationMessageFor(m => m.RubroIds, "", new { @class = "validation-error" }) 
+                </div>
             </div>
+
             <div class="form-row">
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre"})
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "validation-error" }) 
                 </div>
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Correo, new { @class = "form-input", placeholder = "Correo Electrónico", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Correo)
+                    @Html.TextBoxFor(m => m.Correo, new { @class = "form-input", placeholder = "Correo Electrónico"})
+                    @Html.ValidationMessageFor(m => m.Correo, "", new { @class = "validation-error" }) 
                 </div>
             </div>
+
             <div class="form-row">
                 <!-- Select de Provincias -->
                 <div style="width:100%;">
@@ -81,7 +83,7 @@
                         <input type="hidden" name="ProvinciaId" />
                         <input type="hidden" id="ProvinciaNombre" name="Provincia" />
                     </div>
-                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "field-validation-error" })
+                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                 </div>
 
                 <!-- Select de Ciudades -->
@@ -97,21 +99,22 @@
                         <input type="hidden" name="CiudadId" />
                         <input type="hidden" id="CiudadNombre" name="Ciudad" />
                     </div>
-                    @Html.ValidationMessageFor(m => m.Ciudad)
+                    @Html.ValidationMessageFor(m => m.Ciudad, "", new { @class = "validation-error" }) 
                 </div>
-                <div style ="width:100%;">
-                    @Html.TextBoxFor(m => m.Direccion, new { @class = "form-input", placeholder = "Direccion", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Direccion)
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Direccion, new { @class = "form-input", placeholder = "Direccion"})
+                    @Html.ValidationMessageFor(m => m.Direccion, "", new { @class = "validation-error" }) 
                 </div>
             </div>
+
             <div class="form-row">
                 <div style="width:100%;">
-					@Html.TextBoxFor(m => m.Cuit, new { @class = "form-input", placeholder = "CUIT", required = "required" })
-					@Html.ValidationMessageFor(m => m.Cuit)
+                    @Html.TextBoxFor(m => m.Cuit, new { @class = "form-input", placeholder = "CUIT" })
+                    @Html.ValidationMessageFor(m => m.Cuit, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
-					@Html.TextBoxFor(m => m.Telefono, new { @class = "form-input", placeholder = "Teléfono", required = "required" })
-					@Html.ValidationMessageFor(m => m.Telefono)
+                    @Html.TextBoxFor(m => m.Telefono, new { @class = "form-input", placeholder = "Teléfono"})
+                    @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "validation-error" }) 
                 </div>
             </div>
 
@@ -154,9 +157,8 @@
             provinciaContainer.addEventListener("custom-select:change", async (e) => {
                 const provinciaNombre = e.detail.text;
                 const provinciaInput = provinciaContainer.querySelector("#ProvinciaNombre");
-                provinciaInput.value = provinciaNombre; // <-- asignamos el nombre
+                provinciaInput.value = provinciaNombre;
 
-                // Limpiar ciudades
                 ciudadOptionsList.innerHTML = "";
                 ciudadContainer.querySelector(".selected-value").textContent = "Seleccione ciudad";
                 ciudadContainer.querySelector("input[name=CiudadId]").value = "";
@@ -179,7 +181,6 @@
                 }
             });
 
-            // Para la ciudad, si tu select dispara el mismo evento:
             ciudadContainer.addEventListener("custom-select:change", (e) => {
                 const ciudadNombre = e.detail.text;
                 const ciudadInput = ciudadContainer.querySelector("#CiudadNombre");
@@ -188,15 +189,15 @@
         });
     </script>
     <script>
+        // Script del multiple select (no modificado)
         document.addEventListener("DOMContentLoaded", () => {
             const multipleSelectContainer = document.querySelector(".custom-multiple-select-container.multiple");
-            if (!multipleSelectContainer) return; // nada que hacer
+            if (!multipleSelectContainer) return;
 
             const multipleSelectOpciones = multipleSelectContainer.querySelector(".custom-multiple-select-options");
             const hiddenInputsContainer = multipleSelectContainer.querySelector(".hidden-inputs");
             const triggerValueEl = multipleSelectContainer.querySelector(".custom-multiple-select-trigger .selected-value");
 
-            // Helper: crea <li> y le pone listener
             function crearLiConListener(id, nombre) {
                 const li = document.createElement("li");
                 li.dataset.value = id;
@@ -208,7 +209,6 @@
                     const value = li.dataset.value;
 
                     if (li.classList.contains("selected")) {
-                        // evitar duplicados
                         if (!hiddenInputsContainer.querySelector(`input[data-value="${value}"]`)) {
                             const input = document.createElement("input");
                             input.type = "hidden";
@@ -234,14 +234,11 @@
                 triggerValueEl.classList.toggle("placeholder", selectedTexts.length === 0);
             }
 
-            // Llena el <ul> a partir de una lista de filas <tr> (NodeList o Array)
             function llenarDesdeFilas(rows) {
-                // preservar selecciones actuales
                 const seleccionadosActuales = Array.from(hiddenInputsContainer.querySelectorAll("input"))
                     .map(i => i.value);
 
                 multipleSelectOpciones.innerHTML = "";
-                // crear li por cada fila
                 rows.forEach(row => {
                     const id = row.dataset.id;
                     const nombre = row.querySelector(".rubro-disciplina")?.textContent?.trim();
@@ -250,7 +247,6 @@
                     const li = crearLiConListener(id, nombre);
                     if (seleccionadosActuales.includes(id)) {
                         li.classList.add("selected");
-                        // si no existe input (por alguna razón), lo recreo
                         if (!hiddenInputsContainer.querySelector(`input[data-value="${id}"]`)) {
                             const input = document.createElement("input");
                             input.type = "hidden";
@@ -266,17 +262,14 @@
                 actualizarTriggerTexto();
             }
 
-            // Si la tabla del modal está en DOM, la usamos, sino la pedimos por fetch a tu action GetRubros (partial)
             async function actualizarDropdownRubros() {
                 let tablaContainer = document.getElementById("tablaRubrosContainer");
 
                 if (tablaContainer && tablaContainer.querySelectorAll("tbody tr[data-id]").length > 0) {
-                    // ya hay filas en el DOM
                     llenarDesdeFilas(Array.from(tablaContainer.querySelectorAll("tbody tr[data-id]")));
                     return;
                 }
 
-                // Si no existe la tabla o está vacía, intentar obtenerla desde la acción que devuelve la partial
                 try {
                     const res = await fetch("/Rubros/GetRubros", { method: "GET", headers: { "X-Requested-With": "XMLHttpRequest" } });
                     if (!res.ok) {
@@ -284,12 +277,10 @@
                         return;
                     }
                     const html = await res.text();
-                    // parsear HTML recibido y buscar filas
                     const tmp = document.createElement("div");
                     tmp.innerHTML = html;
-                    const rows = tmp.querySelectorAll("tbody tr[data-id]"); // NodeList
+                    const rows = tmp.querySelectorAll("tbody tr[data-id]");
                     if (rows.length === 0) {
-                        // tal vez la partial devuelve otro markup; no hay filas
                         console.warn("Partial de rubros sin filas");
                         multipleSelectOpciones.innerHTML = "";
                         return;
@@ -301,7 +292,6 @@
                 }
             }
 
-            // Cuando se cierra el modal de rubros, re-sincronizar
             const modalRubros = document.getElementById("modalRubros");
             if (modalRubros) {
                 modalRubros.addEventListener("hidden.bs.modal", () => {
@@ -309,7 +299,6 @@
                 });
             }
 
-            // Inicializar al cargar página (intenta usar tabla en DOM o hace fetch)
             actualizarDropdownRubros();
         });
     </script>

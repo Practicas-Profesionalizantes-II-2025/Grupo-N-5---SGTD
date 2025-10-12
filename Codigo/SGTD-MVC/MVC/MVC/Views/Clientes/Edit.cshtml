@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/select.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/validation.css" asp-append-version="true" />
 
 <div class="content-container p-4 edit-cliente-page">
     <div class="form-card">
@@ -18,12 +19,12 @@
             <!-- Datos principales -->
             <div class="form-row">
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre completo", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Nombre)
+                    @Html.TextBoxFor(m => m.Nombre, new { @class = "form-input", placeholder = "Nombre completo"})
+                    @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Telefono, new { @class = "form-input", placeholder = "Teléfono", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Telefono)
+                    @Html.TextBoxFor(m => m.Telefono, new { @class = "form-input", placeholder = "Teléfono"})
+                    @Html.ValidationMessageFor(m => m.Telefono, "", new { @class = "validation-error" })
                 </div>
             </div>
 
@@ -53,7 +54,7 @@
 
                         <input type="hidden" id="ProvinciaNombre" name="Provincia" value="@Model.Provincia" />
                     </div>
-                    @Html.ValidationMessageFor(m => m.Provincia)
+                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                 </div>
 
                 <!-- Ciudades -->
@@ -83,16 +84,16 @@
                 </div>
 
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Direccion, new { @class = "form-input", placeholder = "Dirección", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Direccion)
+                    @Html.TextBoxFor(m => m.Direccion, new { @class = "form-input", placeholder = "Dirección"})
+                    @Html.ValidationMessageFor(m => m.Direccion, "", new { @class = "validation-error" })
                 </div>
             </div>
 
             <!-- Teléfono y DNI -->
             <div class="form-row">
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-input", placeholder = "DNI", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Dni)
+                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-input", placeholder = "DNI"})
+                    @Html.ValidationMessageFor(m => m.Dni, "", new { @class = "validation-error" })
                 </div>
             </div>
 
