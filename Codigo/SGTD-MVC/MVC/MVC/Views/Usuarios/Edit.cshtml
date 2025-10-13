@@ -30,7 +30,7 @@
             <div class="form-row">
                 <!-- Tipo de documento -->
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="tipoDocumentoSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["TipoDocumento"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="tipoDocumentoSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value">@(!string.IsNullOrEmpty(Model.TipoDocumento) ? Model.TipoDocumento : "Seleccione el tipo de documento")</span>
                             <span class="arrow">▼</span>
@@ -40,9 +40,9 @@
                             <li data-value="Pasaporte" class="@(Model.TipoDocumento == "Pasaporte" ? "selected" : "")">Pasaporte</li>
                             <li data-value="Cédula de Identidad" class="@(Model.TipoDocumento == "Cédula de Identidad" ? "selected" : "")">Cédula de Identidad</li>
                         </ul>
-                        <input type="hidden" name="TipoDocumento" value="@Model.TipoDocumento" />
+						<input type="hidden" name="TipoDocumento" value="@Model.TipoDocumento" />
+						@Html.ValidationMessageFor(m => m.TipoDocumento, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.TipoDocumento, "", new { @class = "validation-error" })
                 </div>
 
                 <div style="width:100%;">
@@ -52,7 +52,7 @@
 
                 <!-- Rol -->
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="rolSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["RolId"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="rolSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value placeholder">Seleccione un rol</span>
                             <span class="arrow">▼</span>
@@ -72,9 +72,9 @@
                         {
                             <li class="disabled">Error, no hay roles disponibles</li>
                         }
-                        <input type="hidden" name="RolId" value="@Model.RolId" />
+						<input type="hidden" name="RolId" value="@Model.RolId" />
+						@Html.ValidationMessageFor(m => m.RolId, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.RolId, "", new { @class = "validation-error" })
                 </div>
             </div>
 
@@ -89,7 +89,7 @@
             <div class="form-row">
                 <!-- Provincias -->
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="provinciaSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["Provincia"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="provinciaSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value">@(!string.IsNullOrEmpty(Model.Provincia) ? Model.Provincia : "Seleccione provincia")</span>
                             <span class="arrow">▼</span>
@@ -109,14 +109,14 @@
                             }
                         </ul>
 
-                        <input type="hidden" id="ProvinciaNombre" name="Provincia" value="@Model.Provincia" />
+						<input type="hidden" id="ProvinciaNombre" name="Provincia" value="@Model.Provincia" />
+						@Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                 </div>
 
                 <!-- Ciudades -->
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="ciudadSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["Ciudad"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="ciudadSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value">@(!string.IsNullOrEmpty(Model.Ciudad) ? Model.Ciudad : "Seleccione ciudad")</span>
                             <span class="arrow">▼</span>
@@ -135,9 +135,9 @@
                                 <li data-value="@Model.Ciudad" class="selected">@Model.Ciudad</li>
                             }
                         </ul>
-                        <input type="hidden" id="CiudadNombre" name="Ciudad" value="@Model.Ciudad" />
+						<input type="hidden" id="CiudadNombre" name="Ciudad" value="@Model.Ciudad" />
+						@Html.ValidationMessageFor(m => m.Ciudad, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.Ciudad, "", new { @class = "validation-error" })
                 </div>
             </div>
 

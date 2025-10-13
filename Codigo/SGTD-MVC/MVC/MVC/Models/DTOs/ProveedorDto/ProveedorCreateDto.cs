@@ -26,11 +26,11 @@ namespace MVC.Models.DTOs.ProveedorDto
         [StringLength(20, ErrorMessage = "El teléfono no puede superar los 20 caracteres.")]
         public string Telefono { get; set; }
 
-        [Required(ErrorMessage = "la ciudad es obligatoria.")]
+        [Required(ErrorMessage = "La ciudad es obligatoria.")]
         [StringLength(50, ErrorMessage = "La ciudad no puede superar los 50 caracteres.")]
         public string Ciudad { get; set; }  
 
-        [Required(ErrorMessage = "la provincia es obligatoria.")]
+        [Required(ErrorMessage = "La provincia es obligatoria.")]
         [StringLength(50, ErrorMessage = "La provincia no puede superar los 50 caracteres.")]
         public string Provincia { get; set; }
 

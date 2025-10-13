@@ -1,35 +1,16 @@
 ﻿
-.field-validation-error, .text-danger, .validation-error
-{
+.field-validation-error, .validation-error {
     color: #e63946; /* rojo intenso */
-    font-size: 0.9rem;
-    margin-top: 4px;
+    font-size: 0.875em;
+    font-family: 'Montserrat', sans-serif;
+    text-align: left;
+    margin: 0.25rem 0 0 5px;
     display: block;
-    font-weight: 500;
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Solo mostrar el icono si hay contenido */
-.field-validation-error:not(:empty)::before,
-.text-danger:not(:empty)::before,
-.validation-error:not(:empty)::before {
-   content: "⚠️ ";
-   font-size: 1rem;
-   vertical-align: middle;
-}
 
-/* Si querés que el mensaje tenga fondo suave */
-.validation-box {
-    background-color: #ffe6e6;
-    border-left: 4px solid #e63946;
-    color: #c53030;
-    padding: 6px 10px;
-    margin-top: 4px;
-    border-radius: 4px;
-    font-size: 0.9rem;
-}
-
-/* Animación de aparición */
+/*Animación de aparición*/
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -44,9 +25,9 @@
 
 input.input-validation-error,
 select.input-validation-error,
+custom-multiple-select-trigger,
 textarea.input-validation-error {
     border: 2px solid #e63946 !important;
-    background-color: #fff5f5;
 }
 
 input.input-validation-error:focus,
@@ -56,4 +37,10 @@ textarea.input-validation-error:focus {
     box-shadow: 0 0 4px #e63946;
 }
 
+.custom-multiple-select-container.input-validation-error .custom-multiple-select-trigger {
+    border: 2px solid #e63946 !important;
+}
 
+.custom-select-container.input-validation-error .custom-select-trigger {
+    border: 2px solid #e63946 !important;
+}
