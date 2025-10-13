@@ -12,7 +12,7 @@ namespace MVC.Controllers
 
     namespace MVC.Controllers
     {
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Empleado,Contador")]
         public class ProveedoresController : Controller
         {
             private readonly HttpClient _httpClient;

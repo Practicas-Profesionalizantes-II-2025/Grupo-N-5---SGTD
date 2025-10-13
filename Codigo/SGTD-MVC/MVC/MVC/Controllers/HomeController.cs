@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace MVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Empleado,Contador")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

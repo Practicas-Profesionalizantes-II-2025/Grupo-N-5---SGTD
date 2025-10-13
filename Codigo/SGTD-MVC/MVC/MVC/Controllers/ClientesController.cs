@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace MVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Empleado")]
     public class ClientesController : Controller
     {
         private readonly HttpClient _httpClient;

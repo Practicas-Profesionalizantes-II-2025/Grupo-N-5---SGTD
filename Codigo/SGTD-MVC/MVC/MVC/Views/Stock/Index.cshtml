@@ -1,6 +1,10 @@
-﻿@model IEnumerable<MVC.Models.ViewModels.ProductoIndexVM>
+﻿@using System.Security.Claims
+@model IEnumerable<MVC.Models.ViewModels.ProductoIndexVM>
+
 @{
     ViewData["Title"] = "Stock";
+    var rol = User.FindFirst(ClaimTypes.Role)?.Value;
+
 }
 
 <link rel="stylesheet" href="~/css/indexBase.css" asp-append-version="true" />
@@ -33,7 +37,7 @@
                         <th>Nombre</th>
                         <th>Proveedores</th>
                         <th>Cantidad</th>
-						<th>Precio</th>
+                        <th>Precio</th>
                         <th>Disciplina</th>
                         <th class="estado-col">Estado</th>
                     </tr>
@@ -46,17 +50,19 @@
                             <tr>
                                 <td class="check-col"><input type="checkbox" name="sel" value="@producto.Id" /></td>
                                 <td>@producto.Nombre</td>
-								<td>@string.Join(", ", producto.ProveedorNombres)</td>
+                                <td>@string.Join(", ", producto.ProveedorNombres)</td>
                                 <td class="@(producto.Cantidad <= 5 ? "celda-inactiva" : "")">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
-										@producto.Cantidad
-										<button type="button" class="btn btn-edit btn-stock"
-												data-id="@producto.Id"
-												data-nombre="@producto.Nombre"
-												data-bs-toggle="modal"
-												data-bs-target="#stockModal">
-											Gestionar Stock
-										</button>
+                                        @producto.Cantidad
+                                        @if(rol == "Admin"){
+                                        <button type="button" class="btn btn-edit btn-stock"
+                                            data-id="@producto.Id"
+                                            data-nombre="@producto.Nombre"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#stockModal">
+                                            Gestionar Stock
+                                        </button>
+                                        }
                                     </div>                               
                                 </td>
                                 <td>@producto.Precio.ToString("C", new System.Globalization.CultureInfo("es-AR"))</td>
@@ -82,13 +88,16 @@
                 </tbody>
             </table>
         </div>
-        <div class="actions-row mt-3 d-flex flex-wrap gap-3 justify-content-between sticky-footer">
-            <a asp-controller="Stock" asp-action="Create" class="btn btn-lg btn-add">AÑADIR PRODUCTO</a>
-            <div class="ms-auto d-flex gap-2">
-                <button id="btnModify" class="btn btn-lg btn-edit" disabled>MODIFICAR PRODUCTO</button>
-                <button id="btnDelete" class="btn btn-lg btn-delete" disabled>ELIMINAR PRODUCTO</button>
+        @if (rol == "Admin")
+        {
+            <div class="actions-row mt-3 d-flex flex-wrap gap-3 justify-content-between sticky-footer">
+                <a asp-controller="Stock" asp-action="Create" class="btn btn-lg btn-add">AÑADIR PRODUCTO</a>
+                <div class="ms-auto d-flex gap-2">
+                    <button id="btnModify" class="btn btn-lg btn-edit" disabled>MODIFICAR PRODUCTO</button>
+                    <button id="btnDelete" class="btn btn-lg btn-delete" disabled>ELIMINAR PRODUCTO</button>
+                </div>
             </div>
-        </div>
+        }
     </div>
 </div>
 <!-- Modal confirmación eliminación -->

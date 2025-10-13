@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace MVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Empleado,Contador")]
     public class ReportesController : Controller
     {
         private readonly HttpClient _httpClient;
