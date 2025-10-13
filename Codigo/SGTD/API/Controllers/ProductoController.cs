@@ -136,5 +136,22 @@ namespace API.Controllers
             }
 
         }
+
+        [HttpGet("activos")]
+        public async Task<IActionResult> ObtenerProductosActivos()
+        {
+            try
+            {
+                var productosActivos = await _productoService.ObtenerProductosActivosAsync();
+                if (productosActivos == null || !productosActivos.Any())
+                    return NoContent();
+
+                return Ok(productosActivos);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error interno al obtener los productos activos.");
+            }
+        }
     }
 }

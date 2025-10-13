@@ -115,7 +115,7 @@ namespace MVC.Controllers
             }
 
             // Productos
-            var responseProductos = await _httpClient.GetAsync("producto");
+            var responseProductos = await _httpClient.GetAsync("producto/activos");
             if (responseProductos.IsSuccessStatusCode)
             {
                 var content = await responseProductos.Content.ReadAsStringAsync();

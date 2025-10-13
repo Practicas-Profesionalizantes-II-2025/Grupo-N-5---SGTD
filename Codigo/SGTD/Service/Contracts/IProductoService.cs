@@ -17,5 +17,7 @@ namespace Service.Contracts
         Task RestarStockAsync(IEnumerable<FacturaProductoCreateDTO> items);
         Task<ProductoReadDTO> Editar(int id, ProductoUpdateDTO dto);
         Task Eliminar(int id);
+
+        Task<IEnumerable<ProductoReadDTO>> ObtenerProductosActivosAsync();
     }
 }

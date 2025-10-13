@@ -14,5 +14,7 @@ namespace Data.Contracts
         Task<List<Producto>> FindAllAsyncConProveedores();
         Task<Producto> ObtenerPorIdConProveedores(int id);
         Task<bool> ExistePorNombreAsync(string nombre, int? excludeUserId = null);
+
+        Task<List<Producto>> FindActivosAsync();
     }
 }
