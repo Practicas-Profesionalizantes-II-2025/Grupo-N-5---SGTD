@@ -1,4 +1,5 @@
 ﻿using Data.Contracts;
+using Microsoft.EntityFrameworkCore;
 using Service.Contracts;
 using Service.Mappers;
 using Shared.DTOs.FacturaDTOs;
@@ -120,6 +121,13 @@ namespace Service.Implementations
 
             await _ProductoRepository.Delete(producto); 
         }
+
+        public async Task<IEnumerable<ProductoReadDTO>> ObtenerProductosActivosAsync()
+        {
+            var productos = await _ProductoRepository.FindActivosAsync();
+            return _mapper.ToReadDtoList(productos);
+        }
+
 
 
         async private Task ValidarProductoCreateDTO(ProductoCreateDTO dto)
