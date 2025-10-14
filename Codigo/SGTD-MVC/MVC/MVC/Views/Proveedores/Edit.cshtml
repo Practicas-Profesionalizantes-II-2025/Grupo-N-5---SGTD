@@ -19,8 +19,8 @@
 
             <!-- Rubros -->
             <div class="form-row">
-                <div style="width:100%;">
-                    <div class="custom-multiple-select-container multiple" data-name="RubroIds" style="width:100%;">
+                <div style="width:100%; margin-bottom: 20px;">
+                    <div class="custom-multiple-select-container multiple @(ViewData.ModelState["RubroIds"]?.Errors.Count > 0 ? "input-validation-error" : "")" data-name="Rubros">
                         <button type="button" class="custom-multiple-select-trigger">
                             <span class="selected-value placeholder">
                                 @(Model.RubroIds != null && Model.RubroIds.Any() ? "Rubros seleccionados" : "Seleccione uno o más rubros")
@@ -44,9 +44,9 @@
                                 <li class="disabled">No hay rubros disponibles</li>
                             </ul>
                         }
-                        <div class="hidden-inputs"></div>
+						<div class="hidden-inputs"></div>
+                        @Html.ValidationMessageFor(m => m.RubroIds, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.RubroIds, "", new { @class = "validation-error" })
                 </div>
             </div>
 
@@ -65,8 +65,8 @@
             <!-- Ubicación -->
             <div class="form-row">
                 <!-- Provincias -->
-                <div style="width:100%;">
-                    <div class="custom-select-container" id="provinciaSelect">
+                <div style="width:100%; margin-bottom: 20px;">
+                    <div class="custom-select-container @(ViewData.ModelState["Provincia"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="provinciaSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value">@(!string.IsNullOrEmpty(Model.Provincia) ? Model.Provincia : "Seleccione provincia")</span>
                             <span class="arrow">▼</span>
@@ -86,14 +86,14 @@
                             }
                         </ul>
 
-                        <input type="hidden" id="ProvinciaNombre" name="Provincia" value="@Model.Provincia" />
+						<input type="hidden" id="ProvinciaNombre" name="Provincia" value="@Model.Provincia" />
+                        @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                 </div>
 
                 <!-- Ciudades -->
-                <div style="width:100%;">
-                    <div class="custom-select-container" id="ciudadSelect">
+                <div style="width:100%; margin-bottom: 20px;">
+                    <div class="custom-select-container @(ViewData.ModelState["Ciudad"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="ciudadSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value">@(!string.IsNullOrEmpty(Model.Ciudad) ? Model.Ciudad : "Seleccione ciudad")</span>
                             <span class="arrow">▼</span>
@@ -112,9 +112,9 @@
                                 <li data-value="@Model.Ciudad" class="selected">@Model.Ciudad</li>
                             }
                         </ul>
-                        <input type="hidden" id="CiudadNombre" name="Ciudad" value="@Model.Ciudad" />
+						<input type="hidden" id="CiudadNombre" name="Ciudad" value="@Model.Ciudad" />
+                        @Html.ValidationMessageFor(m => m.Ciudad, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.Ciudad, "", new { @class = "validation-error" })
                 </div>
 
                 <div style="width:100%;">

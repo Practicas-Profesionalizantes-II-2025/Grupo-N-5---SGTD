@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="~/css/createBase.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/botones.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/validation.css" asp-append-version="true" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
 
@@ -21,17 +22,29 @@
                 </div>
                 <div class="form-row">
                     @Html.TextBoxFor(m => m.Email, new { @class = "form-input", placeholder = "Correo electrónico", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "validation-error" })
                 </div>
 
                 <div class="form-row">
                     @Html.TextBoxFor(m => m.Password, new { @class = "form-input", placeholder = "Contraseña", required = "required", type = "password" })
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "validation-error" })
+                    
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+				    {
+					    <div class="validation-summary-errors validation-error" style="font-size: 15px;">
+						    @foreach (var error in ViewData.ModelState[string.Empty].Errors)
+						    {
+                                <p class="validation-error" style="font-size: 15px;">@error.ErrorMessage</p>
+						    }
+					    </div>
+				    }
                 </div>
-
+				
                 <div class="form-actions">
                     <button type="submit" class="btn btn-edit">INGRESAR</button>
                 </div>
+
+                
             </form>
 
             <!-- Imagen -->

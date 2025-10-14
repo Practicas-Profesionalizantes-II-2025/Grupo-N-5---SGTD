@@ -20,7 +20,7 @@
                     @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
-                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-input", placeholder = "Teléfono"})
+                    @Html.TextBoxFor(m => m.Dni, new { @class = "form-input", placeholder = "DNI"})
                     @Html.ValidationMessageFor(m => m.Dni, "", new { @class = "validation-error" })
                 </div>
             </div>
@@ -28,7 +28,7 @@
             <div class="form-row">
                 <!-- Select de Provincias -->
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="provinciaSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["Provincia"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="provinciaSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value placeholder">Seleccione provincia</span>
                             <span class="arrow">▼</span>
@@ -49,14 +49,14 @@
                         </ul>
 
                         <input type="hidden" name="ProvinciaId" />
-                        <input type="hidden" id="ProvinciaNombre" name="Provincia" />
+						<input type="hidden" id="ProvinciaNombre" name="Provincia" />
+						@Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                 </div>
 
                 <!-- Select de Ciudades -->
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="ciudadSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["Ciudad"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="ciudadSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value placeholder">Seleccione ciudad</span>
                             <span class="arrow">▼</span>
@@ -65,9 +65,9 @@
                             <!-- Vacío: se llenará dinámicamente al seleccionar provincia -->
                         </ul>
                         <input type="hidden" name="CiudadId" />
-                        <input type="hidden" id="CiudadNombre" name="Ciudad" />
+						<input type="hidden" id="CiudadNombre" name="Ciudad" />
+						@Html.ValidationMessageFor(m => m.Ciudad, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.Ciudad, "", new { @class = "validation-error" })
                 </div>
             </div>
 

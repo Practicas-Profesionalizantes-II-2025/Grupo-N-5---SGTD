@@ -36,7 +36,7 @@ namespace Service.Implementations
 
         public async Task<ClienteReadDTO> CrearAsync(ClienteCreateDTO dto)
         {
-            ValidarClienteCreateDTO(dto);
+            await ValidarClienteCreateDTO(dto);
 
             var cliente = _mapper.ToEntity(dto);
             await _clienteRepository.Create(cliente);
@@ -49,7 +49,7 @@ namespace Service.Implementations
             if (id <= 0)
                 throw new ArgumentException("El ID debe ser mayor a cero.");
 
-            ValidarClienteUpdateDTO(dto);
+            await ValidarClienteUpdateDTO(dto);
 
             var cliente = await _clienteRepository.ObtenerPorId(id);
             if (cliente == null)
@@ -76,7 +76,7 @@ namespace Service.Implementations
         }
 
 
-        async private void ValidarClienteCreateDTO(ClienteCreateDTO dto)
+        private async Task ValidarClienteCreateDTO(ClienteCreateDTO dto)
         {
             if (string.IsNullOrEmpty(dto.Nombre))
                 throw new ArgumentException("El nombre del cliente es obligatorio.");
@@ -102,7 +102,7 @@ namespace Service.Implementations
             }
         }
 
-        async private void ValidarClienteUpdateDTO(ClienteUpdateDTO dto)
+        private async Task ValidarClienteUpdateDTO(ClienteUpdateDTO dto)
         {
             if (await _clienteRepository.ExistePorDniAsync(dto.Dni))
                 throw new ArgumentException("Ya existe un Cliente con ese numero de documento.", nameof(dto.Dni));

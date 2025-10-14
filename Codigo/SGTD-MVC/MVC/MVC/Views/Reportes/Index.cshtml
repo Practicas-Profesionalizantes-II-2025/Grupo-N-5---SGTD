@@ -1,7 +1,9 @@
-﻿@model IEnumerable<MVC.Models.DTOs.FacturaDto.FacturaReadDTO>
+﻿@using System.Security.Claims
+@model IEnumerable<MVC.Models.ViewModels.ReportesIndexVM>
 
 @{
     ViewData["Title"] = "Reportes";
+    var rol = User.FindFirst(ClaimTypes.Role)?.Value;
 }
 
 <link rel="stylesheet" href="~/css/indexBase.css" asp-append-version="true" />
@@ -33,12 +35,6 @@
                     </svg>
                     Fecha
                 </button>
-                <button class="btn btn-outline-secondary d-flex align-items-center gap-1 flex-grow-1 justify-content-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4 17V20M4 17V4M4 17H7M12 17V20M12 17V10M12 17H15M20 17V20M20 17V13M20 17H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                    </svg>
-                    Exportar
-                </button>
             </div>
         </div>
     </div>
@@ -49,50 +45,53 @@
             <table class="table proveedores-table mb-0">
                 <thead>
                     <tr>
-                        <th>Razon Social</th>
-                        <th>Nro Factura</th>
+                        <th>Razón Social</th>
+                        <th>N° Factura</th>
                         <th>Cliente</th>
                         <th>Cantidad Productos</th>
-                        <th>Valor</th>
-                        <th>Id Fiscal</th>
-                        <th>Descripcion</th>
+                        <th>Total</th>
+                        <th>ID Fiscal</th>
+                        <th>Dirección Fiscal</th>
                         <th>Usuario</th>
-                        <th>Fecha Emision</th>
-
+                        <th>Fecha Emisión</th>
                     </tr>
                 </thead>
                 <tbody id="tabla-body">
-                    @* Ejemplo: recorriendo el modelo *@
-                    @if (Model != null)
+                    @if (Model != null && Model.Any())
                     {
                         foreach (var reporte in Model)
                         {
                             <tr class="cursor-pointer" onclick="seleccionarFila(this, @reporte.Id)">
                                 <td>@reporte.RazonSocial</td>
                                 <td>@reporte.Id</td>
-                                <td>@reporte.ClienteId</td>
-                                <td>@reporte.CantidadProductos</td>
-                                <td class="fw-bold">@reporte.Monto.ToString("C")</td>
-                                 <td>@reporte.IdFiscal</td>
-                                <td>@reporte.UsuarioId</td>
+                                <td>@reporte.ClienteNombre</td>
+                                <td>@reporte.Productos.Count</td>
+                                <td class="fw-bold">@reporte.Total.ToString("C")</td>
+                                <td>@reporte.IdFiscal</td>
+                                <td>@reporte.DireccionFiscal</td>
+                                <td>@reporte.UsuarioNombre</td>
                                 <td>@reporte.FechaEmision.ToString("dd/MM/yyyy")</td>
-                                
                             </tr>
                         }
                     }
                     else
                     {
-                        <tr><td colspan="5" class="text-center text-muted">No hay reportes disponibles</td></tr>
+                        <tr>
+                            <td colspan="9" class="text-center text-muted">
+                                No hay reportes disponibles
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
         </div>
         <div class="actions-row mt-3 d-flex flex-wrap gap-3 justify-content-between sticky-footer">
-            <a asp-controller="Reportes" asp-action="Create" class="btn btn-lg btn-add">GENERAR VENTA</a>
+            @if (rol == "Admin" || rol == "Empleado"){
+                <a asp-controller="Reportes" asp-action="Create" class="btn btn-lg btn-add">GENERAR VENTA</a>
+            }           
             <div class="ms-auto d-flex gap-2">
-                @* <button id="btnVerDetalles" class="btn btn-lg btn-edit" disabled>VER DETALLES</button>  *@
-                <button id="btnDescargarPdf" class="btn btn-lg btn-secondary" disabled>DESCARGAR PDF</button>
-                <button id="btnPreviewPdf" class="btn btn-lg btn-info" disabled>VER DETALLES</button>
+                <button id="btnDescargarPdf" class="btn btn-lg btn-secondary-g" disabled>DESCARGAR PDF</button>
+                <button id="btnPreviewPdf" class="btn btn-lg btn-edit" disabled>VER DETALLES</button>
             </div>
         </div>
     </div>
@@ -147,83 +146,11 @@
         });
     </script>
 }
-@* @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Variables para controlar la selección
-            let reporteSeleccionado = null;
-
-            // Función para seleccionar una fila
-            function seleccionarFila(fila, idReporte) {
-                // Remover selección previa
-                document.querySelectorAll('#tabla-body tr').forEach(r => {
-                    r.classList.remove('selected-row');
-                });
-
-                // Marcar nueva selección
-                fila.classList.add('selected-row');
-                reporteSeleccionado = idReporte;
-
-                // Habilitar botón de ver detalles
-                document.getElementById('btnVerDetalles').disabled = false;
-                document.getElementById('btnDescargarPdf').disabled = false;
-                document.getElementById('btnPreviewPdf').disabled = false;
-            }
-
-            // Simple filtro cliente (opcional) — filtra por texto en la tabla
-            document.getElementById('q').addEventListener('input', function () {
-                const q = this.value.toLowerCase();
-                const rows = document.querySelectorAll('#tabla-body tr');
-                rows.forEach(r => {
-                    const text = r.innerText.toLowerCase();
-                    r.style.display = text.includes(q) ? '' : 'none';
-                });
-            });
-
-            // Configurar botón de ver detalles
-            document.getElementById('btnVerDetalles').addEventListener('click', function() {
-                if (reporteSeleccionado) {
-                    window.location.href = `/Reportes/Detalles/${reporteSeleccionado}`;
-                }
-            });
-
-            document.getElementById('btnPreviewPdf').addEventListener('click', function () {
-            if (reporteSeleccionado) {
-                window.location.href = `/Reportes/Preview/${reporteSeleccionado}`;
-            }
-        });
-            document.getElementById('btnGenerarVenta').addEventListener('click', function () {
-                window.location.href = `/Ventas/Create`;
-            });
-
-            const searchInput = document.querySelector('.search-input');
-            const inputGroup = document.querySelector('.input-group');
-
-            if (searchInput && inputGroup) {
-                // Cuando el input recibe foco
-                searchInput.addEventListener('focus', function() {
-                    inputGroup.classList.add('input-group-active');
-                });
-
-                // Cuando el input pierde el foco
-                searchInput.addEventListener('blur', function() {
-                    inputGroup.classList.remove('input-group-active');
-                });
-            }
-
-            document.getElementById('btnDescargarPdf').addEventListener('click', function() {
-                if (reporteSeleccionado) {
-                    window.location.href = `/Reportes/DescargarPdf/${reporteSeleccionado}`;
-                }
-            });
-        });
-	</script>
-} *@
 
 <style>
     /* Estilo para fila seleccionada */
     .selected-row td {
-        background-color: #21313a !important;
+        background-color: #638291 !important;
         color: #fff !important;
     }
 

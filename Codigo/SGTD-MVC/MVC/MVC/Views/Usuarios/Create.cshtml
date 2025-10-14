@@ -26,7 +26,7 @@
             </div>
             <div class="form-row">
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="tipoDocumentoSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["TipoDocumento"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="tipoDocumentoSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value placeholder">Seleccione el tipo de documento</span>
                             <span class="arrow">▼</span>
@@ -39,16 +39,16 @@
                         </ul>
 
                         <!-- hidden para enviar el valor seleccionado al servidor -->
-                        <input type="hidden" name="TipoDocumento" />
+						<input type="hidden" name="TipoDocumento" />
+						@Html.ValidationMessageFor(m => m.TipoDocumento, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.TipoDocumento, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
                     @Html.TextBoxFor(m => m.NumeroDocumento, new { @class = "form-input", placeholder = "Numero de Documento"})
                     @Html.ValidationMessageFor(m => m.NumeroDocumento, "", new { @class = "validation-error" })
                 </div>
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="rolSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["RolId"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="rolSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value placeholder">Seleccione el rol</span>
                             <span class="arrow">▼</span>
@@ -70,10 +70,9 @@
                             }
                         </ul>
 
-                        <!-- 👇 Ahora sí mapea con tu DTO -->
-                        <input type="hidden" name="RolId" />
+						<input type="hidden" name="RolId" />
+						@Html.ValidationMessageFor(m => m.RolId, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.RolId, "", new { @class = "validation-error" })
                 </div>
             </div>
             <div class="form-row">
@@ -85,7 +84,7 @@
             <div class="form-row">
                 <!-- Select de Provincias -->
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="provinciaSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["Provincia"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="provinciaSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value placeholder">Seleccione provincia</span>
                             <span class="arrow">▼</span>
@@ -108,14 +107,14 @@
                         </ul>
 
                         <input type="hidden" name="ProvinciaId" />
-                        <input type="hidden" id="ProvinciaNombre" name="Provincia" />
+						<input type="hidden" id="ProvinciaNombre" name="Provincia" />
+						@Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.Provincia, "", new { @class = "validation-error" })
                 </div>
 
                 <!-- Select de Ciudades -->
                 <div style="width:100%;">
-                    <div class="custom-select-container" id="ciudadSelect">
+                    <div class="custom-select-container @(ViewData.ModelState["Ciudad"]?.Errors.Count > 0 ? "input-validation-error" : "")" id="ciudadSelect">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value placeholder">Seleccione ciudad</span>
                             <span class="arrow">▼</span>
@@ -124,9 +123,9 @@
                             <!-- Vacío: se llenará dinámicamente al seleccionar provincia -->
                         </ul>
                         <input type="hidden" name="CiudadId" />
-                        <input type="hidden" id="CiudadNombre" name="Ciudad" />
+						<input type="hidden" id="CiudadNombre" name="Ciudad" />
+						@Html.ValidationMessageFor(m => m.Ciudad)
                     </div>
-                    @Html.ValidationMessageFor(m => m.Ciudad)
                 </div>
             </div>
             <div class="form-row">

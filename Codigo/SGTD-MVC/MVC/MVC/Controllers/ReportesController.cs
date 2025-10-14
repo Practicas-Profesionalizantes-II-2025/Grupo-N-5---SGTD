@@ -7,10 +7,11 @@ using MVC.Models.DTOs.ClienteDto;
 using System.Text.Json;
 using Shared.DTOs.FacturaDTOs;
 using System.Security.Claims;
+using MVC.Models.ViewModels;
 
 namespace MVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Empleado,Contador")]
     public class ReportesController : Controller
     {
         private readonly HttpClient _httpClient;
@@ -30,7 +31,7 @@ namespace MVC.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var factura = JsonSerializer.Deserialize<List<FacturaReadDTO>>(content,
+                    var factura = JsonSerializer.Deserialize<List<ReportesIndexVM>>(content,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     return View(factura);

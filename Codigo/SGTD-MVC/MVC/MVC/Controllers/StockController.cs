@@ -12,7 +12,7 @@ using System.Text.Json;
 
 namespace MVC.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Empleado,Contador")]
     public class StockController : Controller
     {
         private readonly HttpClient _httpClient;

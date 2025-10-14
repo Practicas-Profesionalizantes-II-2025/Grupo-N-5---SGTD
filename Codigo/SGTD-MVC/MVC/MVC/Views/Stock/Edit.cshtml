@@ -24,7 +24,7 @@
                 </div>
 
                 <div style="width:100%;">
-                    <div class="custom-select-container" style="width:100%;">
+                    <div class="custom-select-container @(ViewData.ModelState["DisciplinaId"]?.Errors.Count > 0 ? "input-validation-error" : "")" style="width:100%;">
                         <button type="button" class="custom-select-trigger">
                             <span class="selected-value placeholder">Seleccione disciplina</span>
                             <span class="arrow">▼</span>
@@ -44,13 +44,13 @@
                         {
                             <li>No hay disciplinas disponibles</li>
                         }
-                        <input type="hidden" name="DisciplinaId" value="@Model.DisciplinaId" />
+						<input type="hidden" name="DisciplinaId" value="@Model.DisciplinaId" />
+						@Html.ValidationMessageFor(m => m.DisciplinaId, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.DisciplinaId, "", new { @class = "validation-error" })
                 </div>
 
                 <div style="width:100%;">
-                    <div class="custom-multiple-select-container multiple" data-name="ProveedorIds" style="width:100%;">
+                    <div class="custom-multiple-select-container multiple @(ViewData.ModelState["ProveedorIds"]?.Errors.Count > 0 ? "input-validation-error" : "")" data-name="ProveedorIds" style="width:100%;">
                         <button type="button" class="custom-multiple-select-trigger">
                             <span class="selected-value placeholder">Seleccione proveedores</span>
                             <span class="arrow">▼</span>
@@ -78,15 +78,21 @@
                                     <input type="hidden" name="ProveedorIds" value="@id" />
                                 }
                             }
-                        </div>
+						</div>
+						@Html.ValidationMessageFor(m => m.ProveedorIds, "", new { @class = "validation-error" })
                     </div>
-                    @Html.ValidationMessageFor(m => m.ProveedorIds, "", new { @class = "validation-error" })
                 </div>
             </div>
 
             <div class="form-row">
-                <input class="form-input" placeholder="Cantidad" name="Cantidad" type="number" min="0" value="@Model.Cantidad" />
-                <input class="form-input" placeholder="Precio" name="Precio" type="number" value="@Model.Precio" />
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Cantidad, new { @class = "form-input", placeholder = "Cantidad Inicial" })
+                    @Html.ValidationMessageFor(m => m.Cantidad, "", new { @class = "validation-error" })
+                </div>
+                <div style="width:100%;">
+                    @Html.TextBoxFor(m => m.Precio, new { @class = "form-input", placeholder = "Precio" })
+                    @Html.ValidationMessageFor(m => m.Precio, "", new { @class = "validation-error" })
+                </div>
             </div>
 
             <div class="estado-row">

@@ -1,7 +1,9 @@
-﻿@model List<MVC.Models.ViewModels.ProveedorIndexVm>
+﻿@using System.Security.Claims
+@model List<MVC.Models.ViewModels.ProveedorIndexVm>
 
 @{
     ViewData["Title"] = "Proveedores";
+    var rol = User.FindFirst(ClaimTypes.Role)?.Value;
 }
 
 <link rel="stylesheet" href="~/css/indexBase.css" asp-append-version="true" />
@@ -53,19 +55,19 @@
                                 <td>@p.Telefono</td>
                                 <td>@p.Correo</td> 
                                 <td>@p.Direccion</td>
-								<td>@p.Provincia</td>
-								<td>@p.Ciudad</td>
+                                <td>@p.Provincia</td>
+                                <td>@p.Ciudad</td>
                                 <td>@string.Join(", ", p.RubroNombres)</td>
-								<td class="estado-col">
-									@if (p.EstadoNombre == "Activo")
-									{
+                                <td class="estado-col">
+                                    @if (p.EstadoNombre == "Activo")
+                                    {
                                         <span class="badge estado-activo">Activo</span>
-									}
-									else
-									{
+                                    }
+                                    else
+                                    {
                                         <span class="badge estado-inactivo">Inactivo</span>
-									}
-								</td>
+                                    }
+                                </td>
                             </tr>
                         }
                     }
@@ -75,14 +77,18 @@
                     }
                 </tbody>
             </table>
-        </div>
-        <div class="actions-row mt-3 d-flex flex-wrap gap-3 justify-content-between sticky-footer">
-            <a asp-controller="Proveedores" asp-action="Create" class="btn btn-lg btn-add">AÑADIR PROVEEDOR</a>
-            <div class="ms-auto d-flex gap-2">
-                <button id="btnModify" class="btn btn-lg btn-edit" disabled>MODIFICAR PROVEEDOR</button>
-                <button id="btnDelete" class="btn btn-lg btn-delete" disabled>ELIMINAR PROVEEDOR</button>
+        </div>                    
+        @if (rol == "Admin")
+        {
+            <div class="actions-row mt-3 d-flex flex-wrap gap-3 justify-content-between sticky-footer">
+
+                <a asp-controller="Proveedores" asp-action="Create" class="btn btn-lg btn-add">AÑADIR PROVEEDOR</a>
+                <div class="ms-auto d-flex gap-2">
+                    <button id="btnModify" class="btn btn-lg btn-edit" disabled>MODIFICAR PROVEEDOR</button>
+                    <button id="btnDelete" class="btn btn-lg btn-delete" disabled>ELIMINAR PROVEEDOR</button>
+                </div>
             </div>
-        </div>
+        }
     </div>
 </div>
 
