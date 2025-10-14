@@ -35,7 +35,7 @@
                         else
                         {
                             <ul class="custom-multiple-select-options">
-                                <li class="disabled">No hay disciplinas disponibles</li>
+                                <li class="disabled">No hay rubros disponibles</li>
                             </ul>
                         }
                         <div class="hidden-inputs"></div>
@@ -149,70 +149,29 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const provinciaContainer = document.getElementById("provinciaSelect");
-            const ciudadContainer = document.getElementById("ciudadSelect");
-
-            const ciudadOptionsList = ciudadContainer.querySelector(".custom-select-options");
-
-            provinciaContainer.addEventListener("custom-select:change", async (e) => {
-                const provinciaNombre = e.detail.text;
-                const provinciaInput = provinciaContainer.querySelector("#ProvinciaNombre");
-                provinciaInput.value = provinciaNombre;
-
-                ciudadOptionsList.innerHTML = "";
-                ciudadContainer.querySelector(".selected-value").textContent = "Seleccione ciudad";
-                ciudadContainer.querySelector("input[name=CiudadId]").value = "";
-                ciudadContainer.querySelector("#CiudadNombre").value = "";
-
-                try {
-                    const res = await fetch(`/Proveedores/GetCiudades?provinciaNombre=${encodeURIComponent(provinciaNombre)}`);
-                    const ciudades = await res.json();
-
-                    ciudades.sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-                    ciudades.forEach(c => {
-                        const li = document.createElement("li");
-                        li.textContent = c.nombre;
-                        li.dataset.value = c.id || c.nombre;
-                        ciudadOptionsList.appendChild(li);
-                    });
-                } catch (err) {
-                    console.error("Error cargando ciudades:", err);
-                }
-            });
-
-            ciudadContainer.addEventListener("custom-select:change", (e) => {
-                const ciudadNombre = e.detail.text;
-                const ciudadInput = ciudadContainer.querySelector("#CiudadNombre");
-                ciudadInput.value = ciudadNombre;
-            });
-        });
-    </script>
-    <script>
-        // Script del multiple select (no modificado)
-        document.addEventListener("DOMContentLoaded", () => {
-            const multipleSelectContainer = document.querySelector(".custom-multiple-select-container.multiple");
+            // Apuntar específicamente al multiple select de Rubros
+            const multipleSelectContainer = document.querySelector('.custom-multiple-select-container[data-name="Rubros"]');
             if (!multipleSelectContainer) return;
 
-            const multipleSelectOpciones = multipleSelectContainer.querySelector(".custom-multiple-select-options");
-            const hiddenInputsContainer = multipleSelectContainer.querySelector(".hidden-inputs");
-            const triggerValueEl = multipleSelectContainer.querySelector(".custom-multiple-select-trigger .selected-value");
+            const multipleSelectOpciones = multipleSelectContainer.querySelector('.custom-multiple-select-options');
+            const hiddenInputsContainer = multipleSelectContainer.querySelector('.hidden-inputs');
+            const triggerValueEl = multipleSelectContainer.querySelector('.custom-multiple-select-trigger .selected-value');
 
-            function crearLiConListener(id, nombre) {
-                const li = document.createElement("li");
+            // Crear <li> con listener para el multiple select (igual que en Productos)
+            function crearLiRubro(id, nombre) {
+                const li = document.createElement('li');
                 li.dataset.value = id;
                 li.textContent = nombre;
-                li.addEventListener("click", e => {
+                li.addEventListener('click', e => {
                     e.stopPropagation();
-
-                    li.classList.toggle("selected");
+                    li.classList.toggle('selected');
                     const value = li.dataset.value;
 
-                    if (li.classList.contains("selected")) {
+                    if (li.classList.contains('selected')) {
                         if (!hiddenInputsContainer.querySelector(`input[data-value="${value}"]`)) {
-                            const input = document.createElement("input");
-                            input.type = "hidden";
-                            input.name = multipleSelectContainer.dataset.name;
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = multipleSelectContainer.dataset.name; // "Rubros"
                             input.value = value;
                             input.dataset.value = value;
                             hiddenInputsContainer.appendChild(input);
@@ -228,28 +187,36 @@
             }
 
             function actualizarTriggerTexto() {
-                const selectedTexts = Array.from(multipleSelectOpciones.querySelectorAll("li.selected"))
+                const selectedTexts = Array.from(multipleSelectOpciones.querySelectorAll('li.selected'))
                     .map(li => li.textContent.trim());
-                triggerValueEl.textContent = selectedTexts.length > 0 ? selectedTexts.join(", ") : "Seleccione uno o más rubros";
-                triggerValueEl.classList.toggle("placeholder", selectedTexts.length === 0);
+                triggerValueEl.textContent = selectedTexts.length > 0 ? selectedTexts.join(', ') : 'Seleccione uno o más rubros';
+                triggerValueEl.classList.toggle('placeholder', selectedTexts.length === 0);
             }
 
-            function llenarDesdeFilas(rows) {
-                const seleccionadosActuales = Array.from(hiddenInputsContainer.querySelectorAll("input"))
+            function llenarDesdeArrayRubros(arr) {
+                multipleSelectOpciones.innerHTML = '';
+                if (!arr || arr.length === 0) {
+                    multipleSelectOpciones.innerHTML = '<li class="disabled">No hay rubros disponibles</li>';
+                    actualizarTriggerTexto();
+                    return;
+                }
+
+                // conservar seleccionados previos (si existen)
+                const seleccionadosActuales = Array.from(hiddenInputsContainer.querySelectorAll('input'))
                     .map(i => i.value);
 
-                multipleSelectOpciones.innerHTML = "";
-                rows.forEach(row => {
-                    const id = row.dataset.id;
-                    const nombre = row.querySelector(".rubro-disciplina")?.textContent?.trim();
+                arr.forEach(r => {
+                    // r puede venir como objeto { id, nombre } o { Id, Nombre }
+                    const id = r.id ?? r.Id ?? r.value ?? null;
+                    const nombre = r.nombre ?? r.Nombre ?? r.name ?? r.NombreRubro ?? null;
                     if (!id || !nombre) return;
 
-                    const li = crearLiConListener(id, nombre);
-                    if (seleccionadosActuales.includes(id)) {
-                        li.classList.add("selected");
+                    const li = crearLiRubro(id, nombre);
+                    if (seleccionadosActuales.includes(String(id))) {
+                        li.classList.add('selected');
                         if (!hiddenInputsContainer.querySelector(`input[data-value="${id}"]`)) {
-                            const input = document.createElement("input");
-                            input.type = "hidden";
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
                             input.name = multipleSelectContainer.dataset.name;
                             input.value = id;
                             input.dataset.value = id;
@@ -262,43 +229,87 @@
                 actualizarTriggerTexto();
             }
 
+            // Parsea HTML parcial (tabla o ul) devuelto por el servidor
+            function parsearHtmlYllenar(htmlText) {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = htmlText;
+
+                // 1) Intentar encontrar filas <tr data-id>
+                const rows = tmp.querySelectorAll('tbody tr[data-id]');
+                if (rows.length > 0) {
+                    const arr = Array.from(rows).map(r => {
+                        const id = r.dataset.id;
+                        const nombre = r.querySelector('.rubro-disciplina')?.textContent?.trim() || r.querySelector('td')?.textContent?.trim();
+                        return { id, nombre };
+                    });
+                    llenarDesdeArrayRubros(arr);
+                    return;
+                }
+
+                // 2) Intentar encontrar li[data-value] dentro del HTML recibido
+                const lis = tmp.querySelectorAll('li[data-value]');
+                if (lis.length > 0) {
+                    const arr = Array.from(lis).map(li => ({ id: li.dataset.value, nombre: li.textContent.trim() }));
+                    llenarDesdeArrayRubros(arr);
+                    return;
+                }
+
+                // 3) Si nada, dejar mensaje vacío
+                multipleSelectOpciones.innerHTML = '<li class="disabled">No hay rubros disponibles</li>';
+                actualizarTriggerTexto();
+            }
+
+            // Funcion principal: intenta cargar rubros ya presentes en DOM (modal/table) o hace fetch
             async function actualizarDropdownRubros() {
-                let tablaContainer = document.getElementById("tablaRubrosContainer");
-
-                if (tablaContainer && tablaContainer.querySelectorAll("tbody tr[data-id]").length > 0) {
-                    llenarDesdeFilas(Array.from(tablaContainer.querySelectorAll("tbody tr[data-id]")));
+                // 1) Si existe tabla de rubros (por modal) que ya tiene filas, tomar de ahi
+                let tablaContainer = document.getElementById('tablaRubrosContainer');
+                if (tablaContainer && tablaContainer.querySelectorAll('tbody tr[data-id]').length > 0) {
+                    const rows = Array.from(tablaContainer.querySelectorAll('tbody tr[data-id]'));
+                    const arr = rows.map(r => {
+                        const id = r.dataset.id;
+                        const nombre = r.querySelector('.rubro-disciplina')?.textContent?.trim() || r.querySelector('td')?.textContent?.trim();
+                        return { id, nombre };
+                    });
+                    llenarDesdeArrayRubros(arr);
                     return;
                 }
 
+                // 2) Hacer fetch a la acción que devuelve Rubros
                 try {
-                    const res = await fetch("/Rubros/GetRubros", { method: "GET", headers: { "X-Requested-With": "XMLHttpRequest" } });
+                    const res = await fetch('/Proveedores/GetRubros', { method: 'GET', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
                     if (!res.ok) {
-                        console.warn("No se pudo traer partial de rubros:", res.status);
+                        console.warn('No se pudo traer rubros:', res.status);
+                        multipleSelectOpciones.innerHTML = '<li class="disabled">No se pudieron cargar rubros</li>';
                         return;
                     }
+
+                    const contentType = (res.headers.get('content-type') || '').toLowerCase();
+
+                    if (contentType.includes('application/json')) {
+                        // Si la API devuelve JSON (lista de rubros)
+                        const data = await res.json();
+                        // data puede ser array de objetos { id/nombre } o { Id/Nombre }
+                        llenarDesdeArrayRubros(data);
+                        return;
+                    }
+
+                    // Si no es JSON, tratamos como HTML parcial
                     const html = await res.text();
-                    const tmp = document.createElement("div");
-                    tmp.innerHTML = html;
-                    const rows = tmp.querySelectorAll("tbody tr[data-id]");
-                    if (rows.length === 0) {
-                        console.warn("Partial de rubros sin filas");
-                        multipleSelectOpciones.innerHTML = "";
-                        return;
-                    }
-                    llenarDesdeFilas(Array.from(rows));
-                    return;
+                    parsearHtmlYllenar(html);
                 } catch (err) {
-                    console.error("Error fetch GetRubros:", err);
+                    console.error('Error fetch GetRubros:', err);
+                    multipleSelectOpciones.innerHTML = '<li class="disabled">Error cargando rubros</li>';
+                    actualizarTriggerTexto();
                 }
             }
 
-            const modalRubros = document.getElementById("modalRubros");
+            // Si hay modal para rubros, refrescar al cerrarse (coincide con tu lógica previa)
+            const modalRubros = document.getElementById('modalRubros');
             if (modalRubros) {
-                modalRubros.addEventListener("hidden.bs.modal", () => {
-                    actualizarDropdownRubros();
-                });
+                modalRubros.addEventListener('hidden.bs.modal', () => actualizarDropdownRubros());
             }
 
+            // Inicializar
             actualizarDropdownRubros();
         });
     </script>

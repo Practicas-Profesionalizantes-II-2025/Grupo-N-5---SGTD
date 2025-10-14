@@ -54,7 +54,7 @@ $(document).on('submit', '#formCrearRubro', function (e) {
         data: form.serialize(),
         success: function (data) {
             $('#tablaRubrosContainer').html(data);
-            resetFormToCreateMode(form); // Volver al modo agregar después de guardar
+            resetFormToCreateModeRubro(form); // Volver al modo agregar después de guardar
         },
         error: function (xhr) {
             alert("Error: " + xhr.responseText);
@@ -74,7 +74,7 @@ $(document).on('click', '#modalRubros .btn-eliminar-rubro', function () {
         type: 'POST',
         success: function (data) {
             $('#tablaRubrosContainer').html(data);
-            resetFormToCreateMode($('#formCrearRubro')); // Asegurarse de resetear el formulario si estaba en edición
+            resetFormToCreateModeRubro($('#formCrearRubro')); // Asegurarse de resetear el formulario si estaba en edición
         },
         error: function (xhr) {
             alert("Error al eliminar: " + xhr.responseText);

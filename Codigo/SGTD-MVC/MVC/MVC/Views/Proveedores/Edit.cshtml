@@ -20,7 +20,7 @@
             <!-- Rubros -->
             <div class="form-row">
                 <div style="width:100%; margin-bottom: 20px;">
-                    <div class="custom-multiple-select-container multiple @(ViewData.ModelState["RubroIds"]?.Errors.Count > 0 ? "input-validation-error" : "")" data-name="Rubros">
+                    <div class="custom-multiple-select-container multiple @(ViewData.ModelState["RubroIds"]?.Errors.Count > 0 ? "input-validation-error" : "")" data-name="RubroIds">
                         <button type="button" class="custom-multiple-select-trigger">
                             <span class="selected-value placeholder">
                                 @(Model.RubroIds != null && Model.RubroIds.Any() ? "Rubros seleccionados" : "Seleccione uno o más rubros")
@@ -161,6 +161,74 @@
     <script src="~/js/select.js" defer asp-append-version="true"></script>
     <script src="~/js/multipleSelect.js" defer asp-append-version="true"></script>
     <script src="~/js/switch.js" defer asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const container = document.querySelector('.custom-multiple-select-container[data-name="RubroIds"]');
+          if (!container) return;
+
+          const ul = container.querySelector('.custom-multiple-select-options');
+          const hiddenContainer = container.querySelector('.hidden-inputs') || (function(){
+            const d = document.createElement('div'); d.className='hidden-inputs'; container.appendChild(d); return d;
+          })();
+          const triggerValue = container.querySelector('.custom-multiple-select-trigger .selected-value');
+
+          // Crear hidden inputs a partir de li.selected si no existen
+          const selectedLis = Array.from(ul.querySelectorAll('li.selected'));
+          selectedLis.forEach(li => {
+            const val = li.dataset.value;
+            // si ya hay un input con ese data-value no hacemos nada
+            if (!hiddenContainer.querySelector(`input[data-value="${val}"]`)) {
+              const input = document.createElement('input');
+              input.type = 'hidden';
+              input.name = 'RubroIds'; // coincide con data-name modificado
+              input.value = val;
+              input.dataset.value = val;
+              hiddenContainer.appendChild(input);
+            }
+          });
+
+          // Actualizar el texto del trigger con los seleccionados
+          function actualizarTriggerDesdeLis() {
+            const textos = Array.from(ul.querySelectorAll('li.selected')).map(li => li.textContent.trim());
+            if (triggerValue) {
+              triggerValue.textContent = textos.length > 0 ? textos.join(', ') : (triggerValue.dataset.placeholder || 'Seleccione uno o más rubros');
+              triggerValue.classList.toggle('placeholder', textos.length === 0);
+            }
+          }
+          // guardar placeholder si existe
+          if (triggerValue && !triggerValue.dataset.placeholder) {
+            triggerValue.dataset.placeholder = triggerValue.classList.contains('placeholder') ? triggerValue.textContent : 'Seleccione uno o más rubros';
+          }
+
+          actualizarTriggerDesdeLis();
+
+          // Observador: si en algún momento se reemplaza el UL dinámicamente, re-ejecutar la sincronización
+          const mo = new MutationObserver(() => {
+            // crear inputs para cualquier seleccionado nuevo
+            Array.from(ul.querySelectorAll('li.selected')).forEach(li => {
+              const v = li.dataset.value;
+              if (!hiddenContainer.querySelector(`input[data-value="${v}"]`)) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'RubroIds';
+                input.value = v;
+                input.dataset.value = v;
+                hiddenContainer.appendChild(input);
+              }
+            });
+            // si hay inputs sin li.selected (por ejemplo deseleccionados), eliminarlos
+            Array.from(hiddenContainer.querySelectorAll('input[data-value]')).forEach(inp => {
+              if (!ul.querySelector(`li[data-value="${inp.dataset.value}"].selected`)) {
+                inp.remove();
+              }
+            });
+            actualizarTriggerDesdeLis();
+          });
+
+          mo.observe(ul, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
