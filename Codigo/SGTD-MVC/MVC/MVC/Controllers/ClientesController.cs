@@ -187,6 +187,41 @@ namespace MVC.Controllers
                 ViewBag.Provincias = new List<ProvinciaDTO>();
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> CreatePartial()
+        {
+            await CargarProvinciasAsync();
+            return PartialView("~/Views/Shared/Modals/_ModalCreateCliente.cshtml");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePartial([FromBody] ClienteCreateDTO cliente)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Datos inválidos");
+
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(_apiBaseUrl, cliente);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var nuevoCliente = JsonSerializer.Deserialize<ClienteReadDTO>(content,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    // Devolvés el cliente creado como JSON
+                    return Json(new { success = true, cliente = nuevoCliente });
+                }
+
+                return BadRequest("Error al crear el cliente");
+            }
+            catch
+            {
+                return StatusCode(500, "Error de conexión con la API");
+            }
+        }
+
     }
 }
 

@@ -91,7 +91,7 @@
                                     <th style="width: 40%;">Nombre</th>
                                     <th style="width: 15%;">Precio Unitario</th>
                                     <th style="width: 15%;">Cantidad</th>
-                                    <th style="width: 20%;">Total</th>
+                                    <th style="width: 20%;">Subtotal</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -123,7 +123,7 @@
                     <!-- FILA SUPERIOR: AGREGAR - ELIMINAR -->
                     <div style="display: flex; gap: 10px;">
                         <button type="button" id="btnAgregar" class="btn btn-edit w-50">AGREGAR</button>
-                        <button type="button" id="btnEliminar" class="btn btn-delete w-50">ELIMINAR</button>
+                        <button type="button" id="btnEliminar" class="btn btn-secondary-g w-50">ELIMINAR</button>
                     </div>
 
                     <!-- DATOS DEL CLIENTE Y BOTONES -->
@@ -161,7 +161,9 @@
                         </div>
 
                         <div style="display: flex; flex-direction: column;">
-                            <button type="button" class="btn btn-edit w-100 mb-2" id="btnNuevoCliente">NUEVO CLIENTE</button>
+                            <button type="button" class="btn btn-edit w-100 mb-2" id="btnNuevoCliente">
+                                NUEVO CLIENTE
+                            </button>
                             <button type="submit" class="btn btn-add w-100 mb-2">VENDER</button>
                             <a asp-action="Index" class="btn btn-delete w-100" style="margin-bottom: 0 !important;">CANCELAR</a>
                         </div>
@@ -378,9 +380,255 @@
                 productosJsonInput.value = JSON.stringify(productos);
             });
 
+            function agregarClienteAlSelectFactura(cliente) {
+                if (!cliente) return;
+
+                // localizar el contenedor del select de cliente por el input hidden ClienteId
+                const clienteHiddenInput = document.querySelector('.custom-select-container input[name="ClienteId"]');
+                const clienteContainer = clienteHiddenInput ? clienteHiddenInput.closest('.custom-select-container') : null;
+                if (!clienteContainer) {
+                    console.warn("No se encontró el select de clientes en la factura para actualizarlo.");
+                    return;
+                }
+
+                const opcionesUl = clienteContainer.querySelector('.custom-select-options');
+                if (!opcionesUl) {
+                    console.warn("Select de clientes encontrado, pero no tiene .custom-select-options");
+                    return;
+                }
+
+                // eliminar mensaje "No hay clientes disponibles" si existe como único hijo
+                if (opcionesUl.children.length === 1) {
+                    const firstText = opcionesUl.children[0].textContent?.trim().toLowerCase() ?? "";
+                    if (firstText.includes('no hay clientes') || opcionesUl.children[0].classList.contains('disabled')) {
+                        opcionesUl.innerHTML = '';
+                    }
+                }
+
+                const nuevoId = cliente.id ?? cliente.Id ?? cliente.clienteId ?? cliente.ClienteId;
+                const nuevoNombre = cliente.nombre ?? cliente.Nombre ?? "";
+
+                // si ya existe un li con ese id, seleccionarlo y salir (y quitar clase placeholder)
+                const existente = opcionesUl.querySelector(`li[data-value='${nuevoId}']`);
+                const hidden = clienteContainer.querySelector('input[name="ClienteId"]');
+                const selSpan = clienteContainer.querySelector('.selected-value');
+
+                if (existente) {
+                    if (hidden) hidden.value = nuevoId;
+                    if (selSpan) {
+                        selSpan.textContent = existente.textContent;
+                        selSpan.classList.remove('placeholder'); // <-- QUITAR estilo placeholder
+                    }
+                    return;
+                }
+
+                // crear li nuevo
+                const li = document.createElement('li');
+                li.dataset.value = nuevoId;
+                li.textContent = nuevoNombre || "(sin nombre)";
+
+                // listener para que la opción funcione igual que las demás
+                li.addEventListener('click', () => {
+                    if (hidden) hidden.value = li.dataset.value;
+                    if (selSpan) {
+                        selSpan.textContent = li.textContent;
+                        selSpan.classList.remove('placeholder'); // <-- QUITAR estilo placeholder
+                    }
+                });
+
+                opcionesUl.appendChild(li);
+
+                // seleccionarlo inmediatamente
+                if (hidden) hidden.value = nuevoId;
+                if (selSpan) {
+                    selSpan.textContent = li.textContent;
+                    selSpan.classList.remove('placeholder'); // <-- QUITAR estilo placeholder
+                }
+
+                // --- Intento adicional: si tu CustomSelect necesita re-inicializarse, intenta recrearlo ---
+                try {
+                    // Si tu select.js expone CustomSelect, volver a inicializar el contenedor evita inconsistencias
+                    if (typeof CustomSelect !== 'undefined') {
+                        // Opción simple: reiniciar creando una nueva instancia (si tu implementación lo tolera)
+                        new CustomSelect(clienteContainer);
+                    }
+                } catch (err) {
+                    // no fatal — sólo un intento para mantener compatibilidad con implementaciones que cachean opciones
+                    console.warn("No se pudo re-inicializar CustomSelect tras agregar cliente:", err);
+                }
+            }
+
+
+           // Función que inicializa el contenido del modal que viene por partial
+            function initModalContent(modalEl) {
+                // inicializa custom selects (tu CustomSelect debe estar definido en select.js)
+                modalEl.querySelectorAll(".custom-select-container")
+                       .forEach(c => {
+                           try { new CustomSelect(c); }
+                           catch (err) { console.warn("No se pudo inicializar CustomSelect:", err); }
+                       });
+
+                // referencias dentro del modal
+                const form = modalEl.querySelector("#formAddCliente");
+                const provinciaContainer = modalEl.querySelector("#provinciaSelectModal");
+                const ciudadContainer = modalEl.querySelector("#ciudadSelectModal");
+
+                // si no existe form, salimos
+                if (!form) {
+                    console.warn("formAddCliente no encontrado dentro del partial.");
+                } else {
+                    // re-attach listeners (adaptadas de tu partial)
+                    // Cargar ciudades según provincia
+                    if (provinciaContainer && ciudadContainer) {
+                        const ciudadOptionsList = ciudadContainer.querySelector(".custom-select-options");
+
+                        provinciaContainer.addEventListener("custom-select:change", async (e) => {
+                            const provinciaNombre = e.detail?.text ?? "";
+                            const provinciaNombreInput = provinciaContainer.querySelector("#ProvinciaNombreModal");
+                            if (provinciaNombreInput) provinciaNombreInput.value = provinciaNombre;
+
+                            ciudadOptionsList.innerHTML = "";
+                            const sel = ciudadContainer.querySelector(".selected-value");
+                            if (sel) sel.textContent = "Seleccione ciudad";
+                            const ciudadIdInp = ciudadContainer.querySelector("input[name=CiudadId]");
+                            if (ciudadIdInp) ciudadIdInp.value = "";
+                            const ciudadNombreInp = ciudadContainer.querySelector("#CiudadNombreModal");
+                            if (ciudadNombreInp) ciudadNombreInp.value = "";
+
+                            try {
+                                const res = await fetch(`/Clientes/GetCiudades?provinciaNombre=${encodeURIComponent(provinciaNombre)}`, { credentials: 'same-origin' });
+                                if (!res.ok) { throw new Error("Respuesta no OK: " + res.status); }
+
+                                const ciudades = await res.json();
+                                ciudades.sort((a, b) => (a.nombre ?? "").localeCompare(b.nombre ?? ""));
+                                ciudades.forEach(c => {
+                                    const li = document.createElement("li");
+                                    li.textContent = c.nombre;
+                                    li.dataset.value = c.id ?? c.nombre;
+                                    ciudadOptionsList.appendChild(li);
+                                });
+                            } catch (err) {
+                                console.error("Error cargando ciudades:", err);
+                                // mantener la UI estable
+                                ciudadOptionsList.innerHTML = `<li class="disabled">Error cargando ciudades</li>`;
+                            }
+                        });
+
+                        ciudadContainer.addEventListener("custom-select:change", (e) => {
+                            const ciudadNombre = e.detail?.text ?? "";
+                            const ciudadNombreInp = ciudadContainer.querySelector("#CiudadNombreModal");
+                            if (ciudadNombreInp) ciudadNombreInp.value = ciudadNombre;
+                        });
+                    }
+
+                    // envío AJAX del formulario
+                    form.addEventListener("submit", async (ev) => {
+                        ev.preventDefault();
+
+                        const cliente = {
+                            nombre: form.querySelector("[name='Nombre']")?.value ?? "",
+                            dni: form.querySelector("[name='Dni']")?.value ?? "",
+                            telefono: form.querySelector("[name='Telefono']")?.value ?? "",
+                            direccion: form.querySelector("[name='Direccion']")?.value ?? "",
+                            provincia: form.querySelector("[name='Provincia']")?.value ?? "",
+                            ciudad: form.querySelector("[name='Ciudad']")?.value ?? ""
+                        };
+
+                        try {
+                            const response = await fetch('/Clientes/CreatePartial', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                credentials: 'same-origin',
+                                body: JSON.stringify(cliente)
+                            });
+
+                            if (!response.ok) {
+                                console.error("CreatePartial returned", response.status, await response.text());
+                                alert("Error al crear el cliente (server).");
+                                return;
+                            }
+
+                            const result = await response.json();
+                            if (result?.success) {
+                                alert("Cliente agregado correctamente.");
+
+                                // actualizar el select de clientes en la factura con el cliente devuelto
+                                try {
+                                    agregarClienteAlSelectFactura(result.cliente);
+                                } catch (err) {
+                                    console.warn("No se pudo actualizar select de clientes:", err);
+                                }
+
+                                // cerrar modal
+                                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                                if (modalInstance) modalInstance.hide();
+                                else {
+                                    modalEl.classList.remove('show');
+                                    modalEl.style.display = 'none';
+                                    document.body.classList.remove('modal-open');
+                                    const backdrop = document.querySelector('.modal-backdrop');
+                                    if (backdrop) backdrop.remove();
+                                }
+                            }
+                        } catch (err) {
+                            console.error("Error al enviar el cliente:", err);
+                            alert("Error de conexión con el servidor.");
+                        }
+                    });
+                }
+            }
+
+            // handler del botón NUEVO CLIENTE
+            document.getElementById("btnNuevoCliente").addEventListener("click", async () => {
+                const container = document.getElementById("modalContainer");
+
+                try {
+                    // si ya existe el modal en DOM, simplemente abrirlo
+                    let modalEl = document.getElementById("modalAddCliente");
+                    if (!modalEl) {
+                        // fetch solo si no está
+                        const res = await fetch('@Url.Action("CreatePartial","Clientes")', { credentials: 'same-origin' });
+                        if (!res.ok) {
+                            const text = await res.text();
+                            console.error("Error al obtener CreatePartial:", res.status, text);
+                            alert("No se pudo cargar el formulario del cliente. Revisa la consola.");
+                            return;
+                        }
+
+                        const html = await res.text();
+
+                        // opcional: ayuda para debug si la respuesta es un login o html inesperado
+                        if (!html.includes('id="modalAddCliente"')) {
+                            console.error("La partial no contiene el modal esperado. Respuesta:", html);
+                            container.innerHTML = "<!-- Error: partial inválida (ver consola) -->";
+                            alert("Respuesta inválida al intentar cargar el modal (ver consola).");
+                            return;
+                        }
+
+                        container.innerHTML = html;
+                        modalEl = container.querySelector("#modalAddCliente");
+
+                        if (!modalEl) {
+                            console.error("modalAddCliente no encontrado tras insertar HTML.");
+                            return;
+                        }
+
+                        // ejecutar inicializaciones necesarias del modal recién insertado
+                        initModalContent(modalEl);
+                    }
+
+                    // crear/obtener instancia bootstrap y mostrar
+                    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    modal.show();
+
+                } catch (err) {
+                    console.error("Error al abrir modal:", err);
+                }
+            });
+
+
             // Inicializa tabla vacía
             actualizarTabla();
         });
-
     </script>
 }
