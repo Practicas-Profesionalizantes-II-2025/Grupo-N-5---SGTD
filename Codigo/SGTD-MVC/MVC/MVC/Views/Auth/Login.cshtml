@@ -29,17 +29,17 @@
                     @Html.TextBoxFor(m => m.Password, new { @class = "form-input", placeholder = "Contraseña", required = "required", type = "password" })
                     @Html.ValidationMessageFor(m => m.Password, "", new { @class = "validation-error" })
                     
-                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
-				    {
-					    <div class="validation-summary-errors validation-error" style="font-size: 15px;">
-						    @foreach (var error in ViewData.ModelState[string.Empty].Errors)
-						    {
-                                <p class="validation-error" style="font-size: 15px;">@error.ErrorMessage</p>
-						    }
-					    </div>
-				    }
+
                 </div>
-				
+				@if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+				{
+					<div class="validation-summary-errors validation-error" style="font-size: 15px;">
+						@foreach (var error in ViewData.ModelState[string.Empty].Errors)
+						{
+							<p class="validation-error" style="font-size: 15px;">@error.ErrorMessage</p>
+						}
+					</div>
+				}
                 <div class="form-actions">
                     <button type="submit" class="btn btn-edit">INGRESAR</button>
                 </div>

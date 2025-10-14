@@ -60,7 +60,7 @@ namespace Service.Implementations
 
         public async Task<UsuarioReadDTO> CrearAsync(UsuarioCreateDTO dto)
         {
-            ValidarUsuarioCreateDTO(dto);
+            await ValidarUsuarioCreateDTO(dto);
 
 
             var usuario = _mapper.ToEntity(dto);
@@ -77,7 +77,7 @@ namespace Service.Implementations
             if (id <= 0)
                 throw new ArgumentException("El ID debe ser mayor a cero.");
 
-            ValidarUsuarioUpdateDTO(id, dto);
+            await ValidarUsuarioUpdateDTO(id, dto);
 
             var usuario = await _usuarioRepository.ObtenerPorId(id);
             if (usuario == null)
@@ -119,7 +119,7 @@ namespace Service.Implementations
 
             return user; // devolver usuario válido
         }
-        private async void ValidarUsuarioCreateDTO(UsuarioCreateDTO dto)
+        private async Task ValidarUsuarioCreateDTO(UsuarioCreateDTO dto)
         {
             if (dto == null)
                 throw new ArgumentNullException(nameof(dto), "El objeto UsuarioCreateDTO no puede ser nulo.");
