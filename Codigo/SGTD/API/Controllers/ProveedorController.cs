@@ -130,5 +130,22 @@ namespace API.Controllers
                 return StatusCode(500, "Ocurrio un error interno al eliminar el proveedor");
             }
         }
+
+        [HttpGet("activos")]
+        public async Task<IActionResult> ObtenerProveedoresActivos()
+        {
+            try
+            {
+                var proveedoresActivos = await _proveedorService.ObtenerProveedoresActivosAsync();
+                if (proveedoresActivos == null || !proveedoresActivos.Any())
+                    return NoContent();
+
+                return Ok(proveedoresActivos);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Error interno al obtener los proveedores activos.");
+            }
+        }
     }
 }

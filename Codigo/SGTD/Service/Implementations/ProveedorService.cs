@@ -1,6 +1,8 @@
 ﻿using Data.Contracts;
+using Data.Implementations;
 using Microsoft.EntityFrameworkCore;
 using Service.Contracts;
+using Shared.DTOs.ProductoDTOs;
 using Shared.DTOs.ProveedorDTOs;
 using Shared.Entidades;
 using System;
@@ -81,6 +83,12 @@ namespace Service.Implementations
                 throw new KeyNotFoundException($"No se encontró ningún proveedor con ID {id}.");
 
             await _proveedorRepository.Delete(proveedor);
+        }
+
+        public async Task<IEnumerable<ProveedorReadDTO>> ObtenerProveedoresActivosAsync()
+        {
+            var proveedor = await _proveedorRepository.FindActivosAsync();
+            return _mapper.ToReadDtoList(proveedor);
         }
 
         private async Task ValidarProveedorCreateDTO(ProveedorCreateDTO dto)

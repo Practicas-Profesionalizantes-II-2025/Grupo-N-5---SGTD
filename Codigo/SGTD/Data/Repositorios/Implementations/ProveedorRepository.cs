@@ -37,5 +37,12 @@ namespace Data.Implementations
                     .ThenInclude(rp => rp.Rubro)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<List<Proveedor>> FindActivosAsync()
+        {
+            return await _context.Proveedores
+                .Where(p => p.EstadoId == 1) // 1 = Activo
+                .ToListAsync();
+        }
     }
 }
