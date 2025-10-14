@@ -18,7 +18,7 @@ namespace MVC.Controllers
         private readonly HttpClient _httpClient;
         private readonly string _apiBaseUrl = "producto";
         private readonly string _apiDisciplinaUrl = "disciplina";
-        private readonly string _apiProveedorUrl = "proveedor";
+        private readonly string _apiProveedorUrl = "proveedor/activos";
         private readonly string _apiEstadoUrl = "estado";
 
 

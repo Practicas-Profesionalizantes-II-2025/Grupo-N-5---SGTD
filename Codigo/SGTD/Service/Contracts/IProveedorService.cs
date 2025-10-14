@@ -1,4 +1,5 @@
-﻿using Shared.DTOs.ProveedorDTOs;
+﻿using Shared.DTOs.ProductoDTOs;
+using Shared.DTOs.ProveedorDTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,7 @@ namespace Service.Contracts
         Task<ProveedorReadDTO> CrearAsync(ProveedorCreateDTO dto);
         Task<ProveedorReadDTO> Editar(int id, ProveedorUpdateDTO dto);
         Task Eliminar(int id);
+
+        Task<IEnumerable<ProveedorReadDTO>> ObtenerProveedoresActivosAsync();
     }
 }
