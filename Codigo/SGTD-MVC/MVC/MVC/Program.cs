@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,103 +67,35 @@ builder.Services.AddHttpClient("ClientesApi", client =>
 
 
 builder.Services.AddDistributedMemoryCache();
-    builder.Services.AddSession(options =>
-    {
-        options.IdleTimeout = TimeSpan.FromMinutes(30);
-        options.Cookie.HttpOnly = true;
-        options.Cookie.IsEssential = true;
-    });
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
-    var app = builder.Build();
+var app = builder.Build();
 
-    // Middleware
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseExceptionHandler("/Home/Error");
-        app.UseHsts();
-    }
+// Middleware
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
-    app.UseHttpsRedirection();
-    app.UseStaticFiles();
-
-    app.UseRouting();
-
-    app.UseSession();
-    app.UseAuthentication();
-    app.UseAuthorization();
+app.UseHttpMetrics();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseSession();
+app.UseAuthentication();
+app.UseAuthorization();
    
-
+app.MapMetrics();
 // Mapear rutas MVC
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Auth}/{action=Login}/{id?}");
 
-    app.Run();
+app.Run();
 
-
-//var builder = WebApplication.CreateBuilder(args);
-
-//// Add services to the container.
-//builder.Services.AddControllersWithViews();
-
-
-//builder.Services.AddHttpClient("ProveedoresApi", client =>
-//{
-//    client.BaseAddress = new Uri("http://localhost:5079/api/"); // URL de tu API
-//    client.DefaultRequestHeaders.Add("Accept", "application/json");
-//});
-
-//builder.Services.AddHttpClient("ProductosApi", client =>
-//{
-//    client.BaseAddress = new Uri("http://localhost:5079/api/"); // URL de tu API
-//    client.DefaultRequestHeaders.Add("Accept", "application/json");
-//});
-
-//builder.Services.AddHttpClient("ReportesApi", client =>
-//{
-//    client.BaseAddress = new Uri("http://localhost:5079/api/"); // URL de tu API
-//    client.DefaultRequestHeaders.Add("Accept", "application/json");
-//});
-
-//builder.Services.AddHttpClient("UsuariosApi", client =>
-//{
-//    client.BaseAddress = new Uri("http://localhost:5079/api/"); // URL de tu API
-//    client.DefaultRequestHeaders.Add("Accept", "application/json");
-//});
-
-//builder.Services.AddDistributedMemoryCache();
-//builder.Services.AddSession(options =>
-//{
-//    options.IdleTimeout = TimeSpan.FromMinutes(30);
-//    options.Cookie.HttpOnly = true;
-//    options.Cookie.IsEssential = true;
-//});
-
-//var app = builder.Build();
-
-//app.UseStaticFiles();
-//app.UseRouting();
-
-//app.UseSession(); // <-- Esto es clave
-
-
-//// Configure the HTTP request pipeline.
-//if (!app.Environment.IsDevelopment())
-//{
-//    app.UseExceptionHandler("/Home/Error");
-//    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-//    app.UseHsts();
-//}
-
-//app.UseHttpsRedirection();
-//app.UseStaticFiles();
-
-//app.UseRouting();
-
-//app.UseAuthorization();
-
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-//app.Run();

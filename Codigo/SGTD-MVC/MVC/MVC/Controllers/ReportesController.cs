@@ -8,6 +8,7 @@ using System.Text.Json;
 using Shared.DTOs.FacturaDTOs;
 using System.Security.Claims;
 using MVC.Models.ViewModels;
+using Prometheus;
 
 namespace MVC.Controllers
 {
@@ -69,6 +70,8 @@ namespace MVC.Controllers
 
             if (ModelState.IsValid)
             {
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
                 try
                 {
                     // Deserializar manualmente el JSON a la lista real
@@ -85,8 +88,17 @@ namespace MVC.Controllers
 
                     var response = await _httpClient.PostAsJsonAsync(_apiBaseUrl, factura);
 
+                    stopwatch.Stop();
+                    MetricsCollector.HttpRequestDuration
+                        .WithLabels("POST", "/factura/create", response.StatusCode.ToString())
+                        .Observe(stopwatch.Elapsed.TotalSeconds);
+
                     if (response.IsSuccessStatusCode)
+                    {
+                        MetricsCollector.SalesCounter.WithLabels(factura.UsuarioId.ToString()).Inc();
                         return RedirectToAction(nameof(Index));
+                    }
+                        
 
                     ModelState.AddModelError("", "Error al crear la factura: " + response.ReasonPhrase);
                 }
